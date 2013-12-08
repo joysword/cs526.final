@@ -2327,8 +2327,10 @@ img_imaging = loadImage('textures/detec/imag.png')
 img_other = loadImage('textures/detec/other.png')
 img_unknown = loadImage('textures/detec/unknown.png')
 
-img_star = loadImage('texstures/dot/select.png')
-img_select = loadImage('texstures/dot/select.png')
+img_star = loadImage('textures/dot/dot.png')
+img_select = loadImage('textures/dot/select.png')
+img_highlight = loadImage('textures/dot/red.png')
+'''textures/dot/star.png'''
 
 def updateGraph():
 	global li_dotOnWall
@@ -2369,6 +2371,7 @@ def updateGraph():
 		posy = 0
 
 		# BTN_P
+		## detection method
 		if btn_p_1.isChecked():
 			if cmp(p._detection,'unknown')==0:
 				img.setData(img_unknown)
@@ -2385,15 +2388,26 @@ def updateGraph():
 			elif cmp(p._detection,'Microlensing')==0:	
 				img.setData(img_other)
 			img.setSize(Vector2(48,48))
+		## radius
 		elif btn_p_2.isChecked():
-			img.setData(img_star)
+			if needHighlight(li_dotOnWall[i].getSys(),star,p):
+				img.setData(img_highlight)
+			else:
+				img.setData(img_star)
 			img.setSize(Vector2(p._size*100.0/max_size,p._size*100.0/max_size))
+		## mass
 		elif btn_p_3.isChecked():
-			img.setData(img_star)
+			if needHighlight(li_dotOnWall[i].getSys(),star,p):
+				img.setData(img_highlight)
+			else:
+				img.setData(img_star)
 			img.setSize(Vector2(p._mass*100.0/max_mass,p._mass*100.0/max_mass))
 		else:
-			img.setData(img_star)
-			img.setSize(Vector2(50,50))
+			if needHighlight(li_dotOnWall[i].getSys(),star,p):
+				img.setData(img_highlight)
+			else:
+				img.setData(img_star)
+			img.setSize(Vector2(48,48))
 
 		# BTN_X
 		## mass
