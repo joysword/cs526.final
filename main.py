@@ -760,6 +760,8 @@ def initSmallMulti(preset):
 	dic_boxToSys = {}
 	dic_countToSys = {}
 
+	li_plaOnWall = [] # for graph
+
 	print 'start initializing small multiples'
 	playSound(sd_loading, cam.getPosition(), 0.5)
 
@@ -805,6 +807,7 @@ def initSmallMulti(preset):
 			dic_boxToSys[bs_outlineBox] = None
 			dic_countToSys[g_curOrder[smallCount]] = None
 
+			# if it is not an empty box
 			if preset[g_curOrder[smallCount]]!=-1:
 				curSys = li_allSys[preset[g_curOrder[smallCount]]]
 
@@ -851,6 +854,8 @@ def initSmallMulti(preset):
 
 				outCounter = 0
 				for p in curSys._star._children:
+					li_plaOnWall.append(p)
+
 					model = StaticObject.create('defaultSphere')
 					model.setScale(Vector3(p._size * c_scaleWall_size * g_scale_size, p._size * c_scaleWall_size * g_scale_size, p._size * c_scaleWall_size * g_scale_size))
 					model.setPosition(Vector3(0.0,0.0,48000 - p._orbit * c_scaleWall_dist * g_scale_dist))
@@ -2365,6 +2370,8 @@ def showNews(s):
 
 ##############################################################################################################
 # FINAL STUFF
+
+## create graph 1
 graph1 = Container.create(ContainerLayout.LayoutFree, ui.getUi())
 graph1.setStyleValue('fill', '#11296b80')
 graph1.setStyleValue('border', '4 #14b822ff')
@@ -2380,6 +2387,7 @@ else:
 graph1.setBlendMode(WidgetBlendMode.BlendNormal)
 graph1.setAlpha(1.0)
 
+## create graph 2
 graph2 = Container.create(ContainerLayout.LayoutFree, ui.getUi())
 graph2.setStyleValue('fill', '#11296b80')
 graph2.setStyleValue('border', '4 #14b822ff')
@@ -2395,5 +2403,17 @@ else:
 graph2.setBlendMode(WidgetBlendMode.BlendNormal)
 graph2.setAlpha(1.0)
 
+## highlight a box
+def final_highlight_box(box, highlight):
+	if highlight:
+		box.setEffect('colored -e #e2747144')
+		box.getMaterial().setTransparent(True)
+	else:
+		box.setEffect('colored -e #01b2f144')
+		box.getMaterial().setTransparent(True)
+
+def test(hl):
+	global li_boxOnWall
+	final_highlight_box(li_boxOnWall[0], hl)
 
 
