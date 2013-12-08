@@ -159,6 +159,12 @@ def PC_from_LY(n):
 def KM_from_AU(n): # exact
 	return n * 149597870.7
 
+def KM_from_Rj(n):
+	return n * R_jupiter
+
+def KG_from_Me(n):
+	return n * M_earth
+
 ## column names in data file
 g_c = {'sys':0, 'name':1, 'star':2, 'size':3, 'distance':4, 'orbit':4, 'texture':5, 'ra':6, 'dec':7, 'app_mag':8, 'class':9, 'type':10, 'num':11, 'day':12, 'year':13, 'inc':14, 'detection':15, 'mass':16, 'binary':16, 'info_s':17, 'info_p':18}
 
@@ -2239,14 +2245,21 @@ container_g1.setAlpha(1.0)
 
 ## create graph 1
 graph1 = Container.create(ContainerLayout.LayoutFree, container_g1)
-graph1.setPosition(Vector2(100,100))
-graph1.setSize(Vector2(2732-4-104, 1536-4-104))
+graph1.setStyleValue('border', '1 #14b822ff')
+graph1.setPosition(Vector2(50,50))
+if CAVE():
+	graph1.setSize(Vector2(2732-4-104, 1536-4-104))
+else:
+	graph1.setSize(Vector2((2732-4-104)*0.2, (1536-4-104)*0.2))
 graph1.setClippingEnabled(True)
 
 ## create x label
 xlabel1 = Label.create(container_g1)
+xlabel1.setAutosize(False)
+xlabel1.setSize(Vector2(container_g1.getWidth(), 50 ))
 xlabel1.setText('')
 xlabel1.setColor(Color('white'))
+xlabel1.setStyleValue('align', 'middle-center')
 if CAVE():
 	xlabel1.setFont('fonts/arial.ttf 76')
 else:
@@ -2262,6 +2275,7 @@ if CAVE():
 else:
 	ylabel1.setFont('fonts/arial.ttf 14')
 ylabel1.setCenter(Vector2(50,container_g1.getSize().y*0.5))
+ylabel1.setStyleValue('align', 'middle-center')
 ylabel1.setRotation(-90)
 
 ## create p label
@@ -2339,10 +2353,11 @@ img_imaging = loadImage('textures/detec/imag.png')
 img_other = loadImage('textures/detec/other.png')
 img_unknown = loadImage('textures/detec/unknown.png')
 
-img_star = loadImage('textures/dot/dot.png')
+img_star = loadImage('textures/dot/circle.png')
 img_select = loadImage('textures/dot/select.png')
 img_highlight = loadImage('textures/dot/red.png')
 '''textures/dot/star.png'''
+'''textures/dot/dot.png'''
 
 def updateGraph():
 	# TO DO graph2
@@ -2383,6 +2398,65 @@ def updateGraph():
 			max_year = p._year
 		if star._dis>max_dis:
 			max_dis = star._dis
+
+	min_mass = max_mass
+	min_size = max_size
+	min_orbit = max_orbit
+	min_year = max_year
+	min_dis = max_dis
+
+	for i in xrange(len(li_dotOnWall)):
+
+		if p._mass>0 and p._mass<min_mass:
+			min_mass = p._mass
+		if p._size>0 and p._size<min_size:
+			min_size = p._size
+		if p._orbit>0 and p._orbit<min_orbit:
+			min_orbit = p._orbit
+		if p._year>0 and p._year<min_year:
+			min_year = p._year
+		if star._dis>0 and star._dis<min_dis:
+			min_dis = star._dis
+
+	minx = 0
+	miny = 0
+
+	# print 'min_mass:',min_mass
+
+	## mass
+	if btn_x_1.isChecked():
+		minx = math.log10( KG_from_Me(min_mass) )*1.0/math.log10( KG_from_Me(max_mass) )
+	## radius
+	elif btn_x_2.isChecked():
+		minx = math.log10( KM_from_Rj(min_size) )*1.0/math.log10( KM_from_Rj(max_size) )
+	## orbit R (orbit)
+	elif btn_x_3.isChecked():
+		minx = math.log10( KM_from_AU(min_orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
+	## orbit P (year)
+	elif btn_x_4.isChecked():
+		minx = math.log10( min_year*8760 )*1.0/math.log10( max_year*8760 )
+	## dis to us
+	elif btn_x_5.isChecked():
+		minx = math.log10(min_dis)*1.0/math.log10(max_dis)
+
+	## mass
+	if btn_y_1.isChecked():
+		miny = math.log10( KG_from_Me(min_mass) )*1.0/math.log10( KG_from_Me(max_mass) )
+	## radius
+	elif btn_y_2.isChecked():
+		miny = math.log10( KM_from_Rj(min_size) )*1.0/math.log10( KM_from_Rj(max_size) )
+	## orbit R (orbit)
+	elif btn_y_3.isChecked():
+		miny = math.log10( KM_from_AU(min_orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
+	## orbit P (year)
+	elif btn_y_4.isChecked():
+		miny = math.log10( min_year*8760 )*1.0/math.log10( max_year*8760 )
+	## dis to us
+	elif btn_y_5.isChecked():
+		miny = math.log10(min_dis)*1.0/math.log10(max_dis)
+
+	# print 'minx:',minx
+	# print 'miny:',miny
 	
 	for i in xrange(len(li_dotOnWall)):
 		p = li_dotOnWall[i].getPla()
@@ -2421,7 +2495,10 @@ def updateGraph():
 				img.setData(img_highlight)
 			else:
 				img.setData(img_star)
-			img.setSize(Vector2(p._size*100.0/max_size,p._size*100.0/max_size))
+			if CAVE():
+				img.setSize(Vector2(math.log10( KM_from_Rj(p._size) )*100.0/math.log10( KM_from_Rj(max_size) ),math.log10( KM_from_Rj(p._size) )*100.0/math.log10( KM_from_Rj(max_size) )))
+			else:
+				img.setSize(Vector2(math.log10(KM_from_Rj(p._size) )*20.0/math.log10( KM_from_Rj(max_size) ),math.log10( KM_from_Rj(p._size) )*20.0/math.log10( KM_from_Rj( max_size ) )))
 		## mass
 		elif btn_p_3.isChecked():
 			# print 'mass'
@@ -2430,84 +2507,105 @@ def updateGraph():
 				img.setData(img_highlight)
 			else:
 				img.setData(img_star)
-			img.setSize(Vector2(math.log10(p._mass)*10.0/math.log10(max_mass),math.log10(p._mass)*100.0/math.log10(max_mass)))
+			if CAVE():
+				img.setSize(Vector2(math.log10( KG_from_Me(p._mass) )*100.0/math.log10( KG_from_Me(max_mass) ),math.log10( KG_from_Me(p._mass) )*100.0/math.log10( KG_from_Me(max_mass) ) ))
+			else:
+				img.setSize(Vector2(math.log10( KG_from_Me(p._mass) )*20.0/math.log10( KG_from_Me(max_mass) ),math.log10( KG_from_Me(p._mass) )*20.0/math.log10( KG_from_Me(max_mass) ) ))
 		else:
 			plabel1.setText('')
 			if needHighlight(li_dotOnWall[i].getSys(),star,p):
 				img.setData(img_highlight)
 			else:
 				img.setData(img_star)
-			img.setSize(Vector2(48,48))
+			if CAVE():
+				img.setSize(Vector2(48,48))
+			else:
+				img.setSize(Vector2(10,10))
 
 		# BTN_X
 		## mass
 		if btn_x_1.isChecked():
-			xlabel1.setText('planet mass')
+			xlabel1.setText('planet mass (kg)')
 			if p._mass>0:
-				posx = math.log10(p._mass)*1250*2.0/math.log10(max_mass)
+				posx = math.log10( KG_from_Me(p._mass) )*1.0/math.log10( KG_from_Me(max_mass) )
 			else:
 				posx = 0
 		## radius
 		elif btn_x_2.isChecked():
-			xlabel1.setText('planet radius')
+			xlabel1.setText('planet radius (km)')
 			if p._size>0:
-				posx = math.log10(p._size)*1250*2.0/math.log10(max_size)
+				posx = math.log10( KM_from_Rj(p._size) )*1.0/math.log10( KM_from_Rj(max_size) )
 			else:
 				posx = 0
 		## orbit R (orbit)
 		elif btn_x_3.isChecked():
-			xlabel1.setText('orbital radius')
+			xlabel1.setText('orbital radius (km)')
 			if p._orbit>0:
-				posx = math.log10(p._orbit)*1250*2.0/math.log10(max_orbit)
+				posx = math.log10( KM_from_AU(p._orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
 			else:
 				posx = 0
 		## orbit P (year)
 		elif btn_x_4.isChecked():
-			xlabel1.setText('orbital period')
-			posx = p._year*1250*2.0/max_year
+			xlabel1.setText('orbital period (hour)')
+			if p._year>0:
+				posx = math.log10( p._year*8760 )*1.0/math.log10( max_year*8760 )
+			else:
+				posx = 0
 		## dis to us
 		elif btn_x_5.isChecked():
-			xlabel1.setText('distance to the Sun')
+			xlabel1.setText('distance to the Sun (lightyear)')
 			if star._dis>0:
-				posx = math.log10(star._dis)*1250*2.0/math.log10(max_dis)
+				posx = math.log10(star._dis)*1.0/math.log10(max_dis)
 			else:
 				posx = 0
 
 		# BTN_Y
 		## mass
 		if btn_y_1.isChecked():
-			ylabel1.setText('planet mass')
+			ylabel1.setText('planet mass (kg)')
 			if p._mass>0:
-				posy = math.log10(p._mass)*700*2.0/math.log10(max_mass)
+				posy = math.log10( KG_from_Me(p._mass) )*1.0/math.log10( KG_from_Me(max_mass) )
 			else:
 				posy = 0
 		## radius
 		elif btn_y_2.isChecked():
-			ylabel1.setText('planet radius')
+			ylabel1.setText('planet radius (km)')
 			if p._size>0:
-				posy = math.log10(p._size)*700*2.0/math.log10(max_size)
+				posy = math.log10( KM_from_Rj(p._size) )*1.0/math.log10( KM_from_Rj(max_size) )
 			else:
 				posy = 0
 		## orbit R (orbit)
 		elif btn_y_3.isChecked():
-			ylabel1.setText('orbital radius')
+			ylabel1.setText('orbital radius (km)')
 			if p._orbit>0:
-				posy = math.log10(p._orbit)*700*2.0/math.log10(max_orbit)
+				posy = math.log10( KM_from_AU(p._orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
 			else:
 				posy = 0
 		## orbit P (year)
 		elif btn_y_4.isChecked():
-			ylabel1.setText('orbital period')
-			posy = p._year*700*2.0/max_year
+			ylabel1.setText('orbital period (hour)')
+			if p._year>0:
+				posy = math.log10( p._year*8760 )*1.0/ math.log10( max_year*8760 )
+			else:
+				posy = 0	
 		## dis to us
 		elif btn_y_5.isChecked():
-			ylabel1.setText('distance to the Sun')
+			ylabel1.setText('distance to the Sun (lightyear)')
 			if star._dis>0:
-				posy = math.log10(star._dis)*700*2.0/math.log10(max_dis)
+				posy = math.log10(star._dis)*1.0/math.log10(max_dis)
 			else:
 				posy = 0
 
-		img.setCenter(Vector2(posx, graph1.getSize().y-posy))
+		xx = 0
+		yy = 0
+
+		if posx != 0:
+			# print 'posx:', posx
+			# print 'x!!!!!:', (posx-minx)/(1-minx)
+			xx = 0.8 * graph1.getSize().x * (posx-minx)/(1-minx) + 0.1 * graph1.getSize().x
+		if posy != 0:
+			yy = 0.8 * graph1.getSize().y * ( 1 - (posy-miny)/(1-miny) ) + 0.1 * graph1.getSize().y
+		img.setCenter( Vector2(xx,yy) )
 		li_dotOnWall[i].setImage(img)
 
 	print 'done'
