@@ -6,6 +6,8 @@ from datetime import datetime
 from caveutil import *
 from csv import reader
 
+from CoordinateCalculator import CoordinateCalculator
+
 ##############################################################################################################
 # GLOBAL VARIABLES
 c_SMALLMULTI_NUMBER = 40
@@ -1647,6 +1649,11 @@ def addCenter(verticalHeight, theSys):
 ##############################################################################################################
 # EVENT FUNCTION
 
+laser = Image.create(ui.getUi())
+laser.setData(loadImage('laser_dot.png'))
+laser.setCenter(Vector2(100,100))
+laser.setVisible(True)
+
 def onEvent():
 	global g_scale_size
 	global g_scale_dist
@@ -1683,7 +1690,24 @@ def onEvent():
 	global g_cur_highlight_i
 	global g_cur_highlight_i_blue
 
+	global laser
+
 	e = getEvent()
+
+	if e.getServiceType()==ServiceType.Wand:
+		wandPos = e.getPosition()
+		wandOri = e.getOrientation()
+		refVec = Vector3(0.0, 0.0, -1.0)
+		v = wandOri*refVec
+
+		loc = CoordinateCalculator()
+		loc.set_position(wandPos.x, wandPos.y, wandPos.z)
+		loc.set_orientation(v.x, v.y, v.z)
+		loc.calculate()
+		twod_x = int(loc.get_x() * 24588)
+		twod_y = int(loc.get_y() *  3072)
+
+		laser.setCenter(Vector2(twod_x,twod_y))
 
 	## normal operations
 	if g_reorder==0 and g_moveToCenter==0 and g_showInfo==False and g_showNews==False:
@@ -2426,21 +2450,47 @@ else:
 graph1.setBlendMode(WidgetBlendMode.BlendNormal)
 graph1.setAlpha(1.0)
 
-## create graph 2
-graph2 = Container.create(ContainerLayout.LayoutFree, ui.getUi())
-graph2.setStyleValue('fill', '#11296b80')
-graph2.setStyleValue('border', '4 #14b822ff')
-graph2.setAutosize(False)
+## create x label
+xlabel1 = Label.create(graph1)
+xlabel1.setText('hahahahahaha')
+xlabel1.setColor(Color('white'))
 if CAVE():
-	graph2.setSize(Vector2(2732-4, 1536-4))
-	graph2.setPadding(10)
-	graph2.setPosition(Vector2(21856+2,768*2+2))
+	xlabel1.setFont('fonts/arial.ttf 76')
 else:
-	graph2.setSize(Vector2(2728*0.2, 1532*0.2))
-	graph2.setPadding(2)
-	graph2.setPosition(Vector2(20, 20))
-graph2.setBlendMode(WidgetBlendMode.BlendNormal)
-graph2.setAlpha(1.0)
+	xlabel1.setFont('fonts/arial.ttf 14')
+xlabel1.setCenter(Vector2(graph1.getSize().x*0.5,graph1.getSize().y-50))
+print 'size/2',graph1.getSize().x*0.5
+print 'xlabel',xlabel1.getCenter()
+xlabel1.setRotation(0)
+
+## create y label
+ylabel1 = Label.create(graph1)
+ylabel1.setText('hehehehehe')
+ylabel1.setColor(Color('white'))
+if CAVE():
+	ylabel1.setFont('fonts/arial.ttf 76')
+else:
+	ylabel1.setFont('fonts/arial.ttf 14')
+ylabel1.setCenter(Vector2(50,graph1.getSize().y*0.5))
+print 'size/2',graph1.getSize().x*0.5
+print 'ylabel',ylabel1.getCenter()
+ylabel1.setRotation(-90)
+
+## create graph 2
+# graph2 = Container.create(ContainerLayout.LayoutFree, ui.getUi())
+# graph2.setStyleValue('fill', '#11296b80')
+# graph2.setStyleValue('border', '4 #14b822ff')
+# graph2.setAutosize(False)
+# if CAVE():
+# 	graph2.setSize(Vector2(2732-4, 1536-4))
+# 	graph2.setPadding(10)
+# 	graph2.setPosition(Vector2(21856+2,768*2+2))
+# else:
+# 	graph2.setSize(Vector2(2728*0.2, 1532*0.2))
+# 	graph2.setPadding(2)
+# 	graph2.setPosition(Vector2(20, 20))
+# graph2.setBlendMode(WidgetBlendMode.BlendNormal)
+# graph2.setAlpha(1.0)
 
 ## highlight a box
 def final_highlight_box(box, highlight):
@@ -2465,5 +2515,7 @@ def final_highlight_box_blue(box, highlight):
 def test(hl):
 	global li_boxOnWall
 	final_highlight_box(li_boxOnWall[0], hl)
+
+
 
 
