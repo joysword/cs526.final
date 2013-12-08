@@ -328,6 +328,9 @@ class Dot:
 	def setPla(self, _pla):
 		self.pla = _pla
 
+	def getPla(self):
+		return self.pla
+
 	def setImage(self,_image):
 		self.image = _image
 
@@ -2662,3 +2665,47 @@ def final_highlight_box_blue(box, highlight):
 			box.setEffect('colored -e #01b2f144')
 			box.getMaterial().setTransparent(True)
 
+imgData = loadImage('laser_dot.png')
+
+# test if need highlight
+def needHighlight(sys,star,p):
+	if p._isEarthSized and p._orbit>star._habNear and p._orbit<star._habFar:
+		return True
+	elif cmp(sys._name, 'Gliese 876')==0 and cmp(p._name,'b')==0:
+		return True
+	elif cmp(sys._name,'55 Cancri')==0 and cmp(p._name,'f')==0:
+		return True
+	elif cmp(sys._name,'Upsilon Andromedae')==0 and cmp(p._name,'d')==0:
+		return True
+	elif cmp(sys._name,'47 Ursae Majoris')==0 and cmp(p._name,'b')==0:
+		return True
+	elif cmp(sys._name,'HD 37124')==0 and cmp(p._name,'c')==0:
+		return True
+
+	elif cmp(sys._binary,'')!=0:
+		return True
+
+	elif cmp(curSys._name,'Gliese 667')==0 or cmp(curSys._name,'Kepler-78')==0 or cmp(curSys._name,'HD 10180')==0 or cmp(curSys._name,'Kepler-69')==0:
+		return True
+
+	return False
+
+def updateGraph():
+	global li_dotOnWall
+
+	max_size = 0
+	for i in xrange(len(li_dotOnWall)):
+		dot = li_dotOnWall[i]
+		if dot.getPla()._size>max_size:
+			max_size = dot.getPla()._size
+	for i in xrange(len(li_dotOnWall)):
+		dot = li_dotOnWall[i]
+		img = Image.create(graph1)
+		img.setData(imgData)
+		img.setSize(Vector2(20,20))
+		if CAVE():
+			img.setCenter(Vector2(i*10,dot.getPla()._size/max_size*1360*2))
+		else:
+			img.setCenter(Vector2(i*30,dot.getPla()._size/max_size*1360*2*0.2))
+
+updateGraph()
