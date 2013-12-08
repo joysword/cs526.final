@@ -471,24 +471,24 @@ container_p = menu_p.getContainer()
 btn_p_1 = Button.create(container_p)
 btn_p_2 = Button.create(container_p)
 btn_p_3 = Button.create(container_p)
-# btn_p_4 = Button.create(container_p)
+btn_p_4 = Button.create(container_p)
 
 btn_p_1.setText('detection method')
 btn_p_2.setText('radius')
 btn_p_3.setText('mass')
-# btn_p_4.setText('foo bar')
+btn_p_4.setText('nothing')
 
 btn_p_1.setCheckable(True)
 btn_p_2.setCheckable(True)
 btn_p_3.setCheckable(True)
-# btn_p_4.setCheckable(True)
+btn_p_4.setCheckable(True)
 
 btn_p_1.setRadio(True)
 btn_p_2.setRadio(True)
 btn_p_3.setRadio(True)
-# btn_p_4.setRadio(True)
+btn_p_4.setRadio(True)
 
-btn_p_1.setChecked(True)
+btn_p_4.setChecked(True)
 
 ## menu to change scale factor
 menu_scale = mm.getMainMenu().addSubMenu('change scale factor')
@@ -2220,52 +2220,59 @@ def showNews(s):
 ##############################################################################################################
 # FINAL STUFF
 
-## create graph 1
-graph1 = Container.create(ContainerLayout.LayoutFree, ui.getUi())
-graph1.setStyleValue('fill', '#11296b80')
-graph1.setStyleValue('border', '4 #14b822ff')
-graph1.setAutosize(False)
+## create graph 1 container
+container_g1 = Container.create(ContainerLayout.LayoutFree, ui.getUi())
+container_g1.setStyleValue('fill', '#11296b80')
+container_g1.setStyleValue('border', '4 #14b822ff')
+
+container_g1.setAutosize(False)
 if CAVE():
-	graph1.setSize(Vector2(2732-4, 1536-4))
-	graph1.setPadding(10)
-	graph1.setPosition(Vector2(21856+2,0+2))
+	container_g1.setSize(Vector2(2732-4, 1536-4))
+	container_g1.setPadding(0)
+	container_g1.setPosition(Vector2(21856+2,0+2))
 else:
-	graph1.setSize(Vector2(2728*0.2, 1532*0.2))
-	graph1.setPadding(2)
-	graph1.setPosition(Vector2(20, 20))
-graph1.setBlendMode(WidgetBlendMode.BlendNormal)
-graph1.setAlpha(1.0)
+	container_g1.setSize(Vector2(2728*0.2, 1532*0.2))
+	container_g1.setPadding(2)
+	container_g1.setPosition(Vector2(20, 20))
+container_g1.setBlendMode(WidgetBlendMode.BlendNormal)
+container_g1.setAlpha(1.0)
+
+## create graph 1
+graph1 = Container.create(ContainerLayout.LayoutFree, container_g1)
+graph1.setPosition(Vector2(100,100))
+graph1.setSize(Vector2(2732-4-104, 1536-4-104))
+graph1.setClippingEnabled(True)
 
 ## create x label
-xlabel1 = Label.create(graph1)
+xlabel1 = Label.create(container_g1)
 xlabel1.setText('')
 xlabel1.setColor(Color('white'))
 if CAVE():
 	xlabel1.setFont('fonts/arial.ttf 76')
 else:
 	xlabel1.setFont('fonts/arial.ttf 14')
-xlabel1.setCenter(Vector2(graph1.getSize().x*0.5,graph1.getSize().y-50))
+xlabel1.setCenter(Vector2(container_g1.getSize().x*0.5,container_g1.getSize().y-50))
 
 ## create y label
-ylabel1 = Label.create(graph1)
+ylabel1 = Label.create(container_g1)
 ylabel1.setText('')
 ylabel1.setColor(Color('white'))
 if CAVE():
 	ylabel1.setFont('fonts/arial.ttf 76')
 else:
 	ylabel1.setFont('fonts/arial.ttf 14')
-ylabel1.setCenter(Vector2(50,graph1.getSize().y*0.5))
+ylabel1.setCenter(Vector2(50,container_g1.getSize().y*0.5))
 ylabel1.setRotation(-90)
 
 ## create p label
-plabel1 = Label.create(graph1)
+plabel1 = Label.create(container_g1)
 plabel1.setText('')
 plabel1.setColor(Color('white'))
 if CAVE():
 	plabel1.setFont('fonts/arial.ttf 76')
 else:
 	plabel1.setFont('fonts/arial.ttf 14')
-plabel1.setCenter(Vector2(graph1.getSize().x*0.5,50))
+plabel1.setCenter(Vector2(container_g1.getSize().x*0.5,50))
 
 ## create graph 2
 # graph2 = Container.create(ContainerLayout.LayoutFree, ui.getUi())
@@ -2362,7 +2369,7 @@ def updateGraph():
 	max_orbit = 0
 	max_year = 0
 	max_dis = 0
-	
+
 	for i in xrange(len(li_dotOnWall)):
 		p = li_dotOnWall[i].getPla()
 		star = li_dotOnWall[i].getSys()._star
@@ -2436,15 +2443,24 @@ def updateGraph():
 		## mass
 		if btn_x_1.isChecked():
 			xlabel1.setText('planet mass')
-			posx = p._mass*1250*2.0/max_mass
+			if p._mass>0:
+				posx = math.log10(p._mass)*1250*2.0/math.log10(max_mass)
+			else:
+				posx = 0
 		## radius
 		elif btn_x_2.isChecked():
 			xlabel1.setText('planet radius')
-			posx = p._size*1250*2.0/max_size
+			if p._size>0:
+				posx = math.log10(p._size)*1250*2.0/math.log10(max_size)
+			else:
+				posx = 0
 		## orbit R (orbit)
 		elif btn_x_3.isChecked():
 			xlabel1.setText('orbital radius')
-			posx = p._orbit*1250*2.0/max_orbit
+			if p._orbit>0:
+				posx = math.log10(p._orbit)*1250*2.0/math.log10(max_orbit)
+			else:
+				posx = 0
 		## orbit P (year)
 		elif btn_x_4.isChecked():
 			xlabel1.setText('orbital period')
@@ -2452,21 +2468,33 @@ def updateGraph():
 		## dis to us
 		elif btn_x_5.isChecked():
 			xlabel1.setText('distance to the Sun')
-			posx = math.log10(star._dis)*1250*2.0/math.log10(max_year)
+			if star._dis>0:
+				posx = math.log10(star._dis)*1250*2.0/math.log10(max_dis)
+			else:
+				posx = 0
 
 		# BTN_Y
 		## mass
 		if btn_y_1.isChecked():
 			ylabel1.setText('planet mass')
-			posy = p._mass*700*2.0/max_mass
+			if p._mass>0:
+				posy = math.log10(p._mass)*700*2.0/math.log10(max_mass)
+			else:
+				posy = 0
 		## radius
 		elif btn_y_2.isChecked():
 			ylabel1.setText('planet radius')
-			posy = p._size*700*2.0/max_size
+			if p._size>0:
+				posy = math.log10(p._size)*700*2.0/math.log10(max_size)
+			else:
+				posy = 0
 		## orbit R (orbit)
 		elif btn_y_3.isChecked():
 			ylabel1.setText('orbital radius')
-			posy = p._orbit*700*2.0/max_orbit
+			if p._orbit>0:
+				posy = math.log10(p._orbit)*700*2.0/math.log10(max_orbit)
+			else:
+				posy = 0
 		## orbit P (year)
 		elif btn_y_4.isChecked():
 			ylabel1.setText('orbital period')
@@ -2474,9 +2502,12 @@ def updateGraph():
 		## dis to us
 		elif btn_y_5.isChecked():
 			ylabel1.setText('distance to the Sun')
-			posy = math.log10(star._dis)*700*2.0/math.log10(max_year)
+			if star._dis>0:
+				posy = math.log10(star._dis)*700*2.0/math.log10(max_dis)
+			else:
+				posy = 0
 
-		img.setCenter(Vector2(posx, 1536-posy))
+		img.setCenter(Vector2(posx, graph1.getSize().y-posy))
 		li_dotOnWall[i].setImage(img)
 
 	print 'done'
