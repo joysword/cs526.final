@@ -47,6 +47,8 @@ li_textUniv = []
 
 text_univ_highlight = None
 
+g_cur_highlight_box = None
+
 # whether we are showing the info of a system
 g_showInfo = False
 
@@ -1669,6 +1671,8 @@ def onEvent():
 	global g_showInfo
 	global g_showNews
 
+	global g_cur_highlight_box
+
 	e = getEvent()
 
 	## normal operations
@@ -1763,6 +1767,11 @@ def onEvent():
 				hitData = hitNode(node, r[1], r[2])
 				if hitData[0]:
 					pointer.setPosition(hitData[1])
+					if node!=g_cur_highlight_box:
+						final_highlight_box(node,True)
+						final_highlight_box(g_cur_highlight_box,False)
+						g_cur_highlight_box=node
+						print 'change'
 					if e.isButtonDown(EventFlags.Button2):
 						e.setProcessed()
 						if dic_boxToSys[node]!=None:
@@ -2405,12 +2414,13 @@ graph2.setAlpha(1.0)
 
 ## highlight a box
 def final_highlight_box(box, highlight):
-	if highlight:
-		box.setEffect('colored -e #e2747144')
-		box.getMaterial().setTransparent(True)
-	else:
-		box.setEffect('colored -e #01b2f144')
-		box.getMaterial().setTransparent(True)
+	if box!=None:
+		if highlight:
+			box.setEffect('colored -e #e2747144')
+			box.getMaterial().setTransparent(True)
+		else:
+			box.setEffect('colored -e #01b2f144')
+			box.getMaterial().setTransparent(True)
 
 def test(hl):
 	global li_boxOnWall
