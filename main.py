@@ -2237,30 +2237,35 @@ graph1.setBlendMode(WidgetBlendMode.BlendNormal)
 graph1.setAlpha(1.0)
 
 ## create x label
-# xlabel1 = Label.create(graph1)
-# xlabel1.setText('hahahahahaha')
-# xlabel1.setColor(Color('white'))
-# if CAVE():
-# 	xlabel1.setFont('fonts/arial.ttf 76')
-# else:
-# 	xlabel1.setFont('fonts/arial.ttf 14')
-# xlabel1.setCenter(Vector2(graph1.getSize().x*0.5,graph1.getSize().y-50))
-# print 'size/2',graph1.getSize().x*0.5
-# print 'xlabel',xlabel1.getCenter()
-# xlabel1.setRotation(0)
+xlabel1 = Label.create(graph1)
+xlabel1.setText('')
+xlabel1.setColor(Color('white'))
+if CAVE():
+	xlabel1.setFont('fonts/arial.ttf 76')
+else:
+	xlabel1.setFont('fonts/arial.ttf 14')
+xlabel1.setCenter(Vector2(graph1.getSize().x*0.5,graph1.getSize().y-50))
 
 ## create y label
-# ylabel1 = Label.create(graph1)
-# ylabel1.setText('hehehehehe')
-# ylabel1.setColor(Color('white'))
-# if CAVE():
-# 	ylabel1.setFont('fonts/arial.ttf 76')
-# else:
-# 	ylabel1.setFont('fonts/arial.ttf 14')
-# ylabel1.setCenter(Vector2(50,graph1.getSize().y*0.5))
-# print 'size/2',graph1.getSize().x*0.5
-# print 'ylabel',ylabel1.getCenter()
-# ylabel1.setRotation(-90)
+ylabel1 = Label.create(graph1)
+ylabel1.setText('')
+ylabel1.setColor(Color('white'))
+if CAVE():
+	ylabel1.setFont('fonts/arial.ttf 76')
+else:
+	ylabel1.setFont('fonts/arial.ttf 14')
+ylabel1.setCenter(Vector2(50,graph1.getSize().y*0.5))
+ylabel1.setRotation(-90)
+
+## create p label
+plabel1 = Label.create(graph1)
+plabel1.setText('')
+plabel1.setColor(Color('white'))
+if CAVE():
+	plabel1.setFont('fonts/arial.ttf 76')
+else:
+	plabel1.setFont('fonts/arial.ttf 14')
+plabel1.setCenter(Vector2(graph1.getSize().x*0.5,50))
 
 ## create graph 2
 # graph2 = Container.create(ContainerLayout.LayoutFree, ui.getUi())
@@ -2333,20 +2338,31 @@ img_highlight = loadImage('textures/dot/red.png')
 '''textures/dot/star.png'''
 
 def updateGraph():
+	# TO DO graph2
+
 	global li_dotOnWall
+	global graph1
+	global xlabel1
+	global ylabel1
+	global plabel1
+
+	# global graph2
+	# global xlabel2
+	# global ylabel2
+	# global plabel2
+
+	print 'start updating Graph'
 
 	if graph1.getNumChildren()>0:
 		for i in xrange(graph1.getNumChildren()):
 			graph1.removeChild(graph1.getChildByIndex(0))
-
-	# TO DO graph2
 
 	max_mass = 0
 	max_size = 0
 	max_orbit = 0
 	max_year = 0
 	max_dis = 0
-
+	
 	for i in xrange(len(li_dotOnWall)):
 		p = li_dotOnWall[i].getPla()
 		star = li_dotOnWall[i].getSys()._star
@@ -2373,10 +2389,12 @@ def updateGraph():
 		# BTN_P
 		## detection method
 		if btn_p_1.isChecked():
+			# print 'detection method'
+			plabel1.setText('detection method')
 			if cmp(p._detection,'unknown')==0:
 				img.setData(img_unknown)
 			elif cmp(p._detection,'Radial Velocity')==0:
-				img.setData(img_rad)
+				img.setData(img_radial)
 			elif cmp(p._detection,'Transit')==0:
 				img.setData(img_transit)
 			elif cmp(p._detection,'Imaging')==0:
@@ -2390,6 +2408,8 @@ def updateGraph():
 			img.setSize(Vector2(48,48))
 		## radius
 		elif btn_p_2.isChecked():
+			# print 'radius'
+			plabel1.setText('radius')
 			if needHighlight(li_dotOnWall[i].getSys(),star,p):
 				img.setData(img_highlight)
 			else:
@@ -2397,12 +2417,15 @@ def updateGraph():
 			img.setSize(Vector2(p._size*100.0/max_size,p._size*100.0/max_size))
 		## mass
 		elif btn_p_3.isChecked():
+			# print 'mass'
+			plabel1.setText('mass')
 			if needHighlight(li_dotOnWall[i].getSys(),star,p):
 				img.setData(img_highlight)
 			else:
 				img.setData(img_star)
-			img.setSize(Vector2(p._mass*100.0/max_mass,p._mass*100.0/max_mass))
+			img.setSize(Vector2(math.log10(p._mass)*10.0/math.log10(max_mass),math.log10(p._mass)*100.0/math.log10(max_mass)))
 		else:
+			plabel1.setText('')
 			if needHighlight(li_dotOnWall[i].getSys(),star,p):
 				img.setData(img_highlight)
 			else:
@@ -2412,36 +2435,51 @@ def updateGraph():
 		# BTN_X
 		## mass
 		if btn_x_1.isChecked():
+			xlabel1.setText('planet mass')
 			posx = p._mass*1250*2.0/max_mass
 		## radius
 		elif btn_x_2.isChecked():
+			xlabel1.setText('planet radius')
 			posx = p._size*1250*2.0/max_size
 		## orbit R (orbit)
 		elif btn_x_3.isChecked():
+			xlabel1.setText('orbital radius')
 			posx = p._orbit*1250*2.0/max_orbit
 		## orbit P (year)
 		elif btn_x_4.isChecked():
+			xlabel1.setText('orbital period')
 			posx = p._year*1250*2.0/max_year
 		## dis to us
 		elif btn_x_5.isChecked():
+			xlabel1.setText('distance to the Sun')
 			posx = math.log10(star._dis)*1250*2.0/math.log10(max_year)
 
 		# BTN_Y
 		## mass
 		if btn_y_1.isChecked():
+			ylabel1.setText('planet mass')
 			posy = p._mass*700*2.0/max_mass
 		## radius
 		elif btn_y_2.isChecked():
+			ylabel1.setText('planet radius')
 			posy = p._size*700*2.0/max_size
 		## orbit R (orbit)
 		elif btn_y_3.isChecked():
+			ylabel1.setText('orbital radius')
 			posy = p._orbit*700*2.0/max_orbit
 		## orbit P (year)
 		elif btn_y_4.isChecked():
+			ylabel1.setText('orbital period')
 			posy = p._year*700*2.0/max_year
 		## dis to us
 		elif btn_y_5.isChecked():
+			ylabel1.setText('distance to the Sun')
 			posy = math.log10(star._dis)*700*2.0/math.log10(max_year)
+
+		img.setCenter(Vector2(posx, 1536-posy))
+		li_dotOnWall[i].setImage(img)
+
+	print 'done'
 
 
 updateGraph()
@@ -2474,7 +2512,7 @@ def showInfoForDot(dot):
 laser = Image.create(ui.getUi())
 laser.setData(loadImage('pointer.png'))
 laser.setCenter(Vector2(25000,100))
-laser.setSize(Vector2(20,20))
+laser.setSize(Vector2(128,128))
 laser.setVisible(True)
 
 def onEvent():
@@ -2538,23 +2576,23 @@ def onEvent():
 			laser.setCenter(Vector2(twod_x,twod_y))
 			for i in xrange(len(li_dotOnWall)):
 				dot = li_dotOnWall[i]
-				if dot.getImage().hitTest(Vector2(twod_x, twod_y)):
-					dot.getImage().setScale(2)
-					# show info
-					if e.isButtonDown(EventFlags.Button2):
-						showInfoForDot(dot)
-						e.setProcessed()
-						return None
-					# highlight and bring to center
-					elif e.isButtonDown(EventFlags.Button3):
-						for node, sys in dic_boxToSys.iteritems():
-							if sys == dot.getSys():
-								highlight_box(node,True)
-								addCenter(1.3,sys)
-								e.setProcessed()
-								return None
-				else:
+				if dot.getImage()!=None:					
 					dot.getImage().setScale(1)
+					if dot.getImage().hitTest(Vector2(twod_x, twod_y)):
+						dot.getImage().setScale(2)
+						# show info
+						if e.isButtonDown(EventFlags.Button2):
+							showInfoForDot(dot)
+							e.setProcessed()
+							return None
+						# highlight and bring to center
+						elif e.isButtonDown(EventFlags.Button3):
+							for node, sys in dic_boxToSys.iteritems():
+								if sys == dot.getSys():
+									highlight_box(node,True)
+									addCenter(1.3,sys)
+									e.setProcessed()
+									return None						
 
 			e.setProcessed()
 			return None
