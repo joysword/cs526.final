@@ -2327,7 +2327,7 @@ img_imaging = loadImage('textures/detec/imag.png')
 img_other = loadImage('textures/detec/other.png')
 img_unknown = loadImage('textures/detec/unknown.png')
 
-img_star = loadImage('texstures/dot/star.png')
+img_star = loadImage('texstures/dot/select.png')
 img_select = loadImage('texstures/dot/select.png')
 
 def updateGraph():
@@ -2365,6 +2365,10 @@ def updateGraph():
 
 		img = Image.create(graph1)
 
+		posx = 0
+		posy = 0
+
+		# BTN_P
 		if btn_p_1.isChecked():
 			if cmp(p._detection,'unknown')==0:
 				img.setData(img_unknown)
@@ -2391,33 +2395,40 @@ def updateGraph():
 			img.setData(img_star)
 			img.setSize(Vector2(50,50))
 
-		if btn_p_2.isChecked():
+		# BTN_X
+		## mass
+		if btn_x_1.isChecked():
+			posx = p._mass*1250*2.0/max_mass
+		## radius
+		elif btn_x_2.isChecked():
+			posx = p._size*1250*2.0/max_size
+		## orbit R (orbit)
+		elif btn_x_3.isChecked():
+			posx = p._orbit*1250*2.0/max_orbit
+		## orbit P (year)
+		elif btn_x_4.isChecked():
+			posx = p._year*1250*2.0/max_year
+		## dis to us
+		elif btn_x_5.isChecked():
+			posx = math.log10(star._dis)*1250*2.0/math.log10(max_year)
 
+		# BTN_Y
+		## mass
+		if btn_y_1.isChecked():
+			posy = p._mass*700*2.0/max_mass
+		## radius
+		elif btn_y_2.isChecked():
+			posy = p._size*700*2.0/max_size
+		## orbit R (orbit)
+		elif btn_y_3.isChecked():
+			posy = p._orbit*700*2.0/max_orbit
+		## orbit P (year)
+		elif btn_y_4.isChecked():
+			posy = p._year*700*2.0/max_year
+		## dis to us
+		elif btn_y_5.isChecked():
+			posy = math.log10(star._dis)*700*2.0/math.log10(max_year)
 
-	if btn_x_1.isChecked():
-
-
-	for i in xrange(len(li_dotOnWall)):
-		dot = li_dotOnWall[i]
-		img = Image.create(graph1)
-		img.setData(imgData)
-		#img.setSize(Vector2(,20))
-		dot.setImage(img)
-		if CAVE():
-			img.setCenter(Vector2(i*10,dot.getPla()._size/max_size*1360*2))
-		else:
-			img.setCenter(Vector2(i*30,dot.getPla()._size/max_size*1360*2*0.2))
-
-	# detection method
-	if btn_p_1.isChecked():
-		#img.setCenter(Vector2(i*10,))
-		pass
-	# radius
-	elif btn_p_2.isChecked():
-		pass
-	# mass
-	elif btn_p_3.isChecked():
-		pass
 
 updateGraph()
 
@@ -2448,7 +2459,8 @@ def showInfoForDot(dot):
 
 laser = Image.create(ui.getUi())
 laser.setData(loadImage('pointer.png'))
-laser.setCenter(Vector2(100,100))
+laser.setCenter(Vector2(25000,100))
+laser.setSize(Vector2(20,20))
 laser.setVisible(True)
 
 def onEvent():
