@@ -45,6 +45,8 @@ dic_boxToSys = {} # dictionary of small multiple boxes
 dic_countToSys = {} # dictionary of systems
 li_boxOnWall = [] # scenenodes (outlineBox)
 
+li_dotOnWall = []
+
 li_textUniv = []
 
 text_univ_highlight = None
@@ -304,6 +306,32 @@ class plaSys:
 		self._hasInfo_s = hasInfo_s
 		self._hasInfo_p = hasInfo_p
 
+class Dot:
+	def __init__(self):
+		self.pos = Vector2(0,0)
+		self.sys = None
+		self.pla = None
+		self.image = None
+
+	def setPosition(self,_pos):
+		self.pos = _pos
+
+	def getPosition(self):
+		return self.pos
+
+	def setSys(self,_sys):
+		self.sys = _sys
+
+	def getSys(self):
+		return self.sys
+
+	def setPla(self, _pla):
+		self.pla = _pla
+
+	def setImage(self,_image):
+		self.image = _image
+
+
 ##############################################################################################################
 # PLAY SOUND
 sdEnv = getSoundEnvironment()
@@ -338,6 +366,123 @@ def playSound(sd, pos, vol):
 # CREATE MENUS
 
 mm = MenuManager.createAndInitialize()
+
+menu_graph = mm.getMainMenu().addSubMenu('change graph')
+menu_x = menu_graph.addSubMenu('x axis')
+menu_y = menu_graph.addSubMenu('y axis')
+menu_p = menu_graph.addSubMenu('points')
+btn_change_graph = menu_graph.addButton('update','updateGraph()')
+
+container_x = menu_x.getContainer()
+btn_x_1 = Button.create(container_x)
+btn_x_2 = Button.create(container_x)
+btn_x_3 = Button.create(container_x)
+btn_x_4 = Button.create(container_x)
+btn_x_5 = Button.create(container_x)
+btn_x_6 = Button.create(container_x)
+btn_x_7 = Button.create(container_x)
+btn_x_8 = Button.create(container_x)
+btn_x_9 = Button.create(container_x)
+
+btn_x_1.setText('Planet Mass')
+btn_x_2.setText('Planet Radius')
+btn_x_3.setText('Orbital Radius')
+btn_x_4.setText('Orbital Period')
+btn_x_5.setText('Distance to us')
+btn_x_6.setText('foo bar')
+btn_x_7.setText('foo bar')
+btn_x_8.setText('foo bar')
+btn_x_9.setText('foo bar')
+
+btn_x_1.setCheckable(True)
+btn_x_2.setCheckable(True)
+btn_x_3.setCheckable(True)
+btn_x_4.setCheckable(True)
+btn_x_5.setCheckable(True)
+btn_x_6.setCheckable(True)
+btn_x_7.setCheckable(True)
+btn_x_8.setCheckable(True)
+btn_x_9.setCheckable(True)
+
+btn_x_1.setRadio(True)
+btn_x_2.setRadio(True)
+btn_x_3.setRadio(True)
+btn_x_4.setRadio(True)
+btn_x_5.setRadio(True)
+btn_x_6.setRadio(True)
+btn_x_7.setRadio(True)
+btn_x_8.setRadio(True)
+btn_x_9.setRadio(True)
+
+btn_x_1.setChecked(True)
+
+
+container_y = menu_y.getContainer()
+btn_y_1 = Button.create(container_y)
+btn_y_2 = Button.create(container_y)
+btn_y_3 = Button.create(container_y)
+btn_y_4 = Button.create(container_y)
+btn_y_5 = Button.create(container_y)
+btn_y_6 = Button.create(container_y)
+btn_y_7 = Button.create(container_y)
+btn_y_8 = Button.create(container_y)
+btn_y_9 = Button.create(container_y)
+
+btn_y_1.setText('Planet Mass')
+btn_y_2.setText('Planet Radius')
+btn_y_3.setText('Orbital Radius')
+btn_y_4.setText('Orbital Period')
+btn_y_5.setText('Distance to us')
+btn_y_6.setText('foo bar')
+btn_y_7.setText('foo bar')
+btn_y_8.setText('foo bar')
+btn_y_9.setText('foo bar')
+
+btn_y_1.setCheckable(True)
+btn_y_2.setCheckable(True)
+btn_y_3.setCheckable(True)
+btn_y_4.setCheckable(True)
+btn_y_5.setCheckable(True)
+btn_y_6.setCheckable(True)
+btn_y_7.setCheckable(True)
+btn_y_8.setCheckable(True)
+btn_y_9.setCheckable(True)
+
+btn_y_1.setRadio(True)
+btn_y_2.setRadio(True)
+btn_y_3.setRadio(True)
+btn_y_4.setRadio(True)
+btn_y_5.setRadio(True)
+btn_y_6.setRadio(True)
+btn_y_7.setRadio(True)
+btn_y_8.setRadio(True)
+btn_y_9.setRadio(True)
+
+btn_y_1.setChecked(True)
+
+
+container_p = menu_p.getContainer()
+btn_p_1 = Button.create(container_p)
+btn_p_2 = Button.create(container_p)
+btn_p_3 = Button.create(container_p)
+btn_p_4 = Button.create(container_p)
+
+btn_p_1.setText('detection method')
+btn_p_2.setText('radius')
+btn_p_3.setText('mass')
+btn_p_4.setText('foo bar')
+
+btn_p_1.setCheckable(True)
+btn_p_2.setCheckable(True)
+btn_p_3.setCheckable(True)
+btn_p_4.setCheckable(True)
+
+btn_p_1.setRadio(True)
+btn_p_2.setRadio(True)
+btn_p_3.setRadio(True)
+btn_p_4.setRadio(True)
+
+btn_p_1.setChecked(True)
 
 ## menu to change scale factor
 menu_scale = mm.getMainMenu().addSubMenu('change scale factor')
@@ -766,11 +911,13 @@ def initSmallMulti(preset):
 
 	global g_isLoadingFromSavedConfig
 
+	global li_dotOnWall
+
 	li_boxOnWall = []
 	dic_boxToSys = {}
 	dic_countToSys = {}
 
-	li_plaOnWall = [] # for graph
+	li_dotOnWall = [] # for graph
 
 	print 'start initializing small multiples'
 	playSound(sd_loading, cam.getPosition(), 0.5)
@@ -864,7 +1011,10 @@ def initSmallMulti(preset):
 
 				outCounter = 0
 				for p in curSys._star._children:
-					li_plaOnWall.append(p)
+					dot = Dot()
+					dot.setSys(curSys)
+					dot.setPla(p)
+					li_dotOnWall.append(dot)
 
 					model = StaticObject.create('defaultSphere')
 					model.setScale(Vector3(p._size * c_scaleWall_size * g_scale_size, p._size * c_scaleWall_size * g_scale_size, p._size * c_scaleWall_size * g_scale_size))
@@ -2451,30 +2601,30 @@ graph1.setBlendMode(WidgetBlendMode.BlendNormal)
 graph1.setAlpha(1.0)
 
 ## create x label
-xlabel1 = Label.create(graph1)
-xlabel1.setText('hahahahahaha')
-xlabel1.setColor(Color('white'))
-if CAVE():
-	xlabel1.setFont('fonts/arial.ttf 76')
-else:
-	xlabel1.setFont('fonts/arial.ttf 14')
-xlabel1.setCenter(Vector2(graph1.getSize().x*0.5,graph1.getSize().y-50))
-print 'size/2',graph1.getSize().x*0.5
-print 'xlabel',xlabel1.getCenter()
-xlabel1.setRotation(0)
+# xlabel1 = Label.create(graph1)
+# xlabel1.setText('hahahahahaha')
+# xlabel1.setColor(Color('white'))
+# if CAVE():
+# 	xlabel1.setFont('fonts/arial.ttf 76')
+# else:
+# 	xlabel1.setFont('fonts/arial.ttf 14')
+# xlabel1.setCenter(Vector2(graph1.getSize().x*0.5,graph1.getSize().y-50))
+# print 'size/2',graph1.getSize().x*0.5
+# print 'xlabel',xlabel1.getCenter()
+# xlabel1.setRotation(0)
 
 ## create y label
-ylabel1 = Label.create(graph1)
-ylabel1.setText('hehehehehe')
-ylabel1.setColor(Color('white'))
-if CAVE():
-	ylabel1.setFont('fonts/arial.ttf 76')
-else:
-	ylabel1.setFont('fonts/arial.ttf 14')
-ylabel1.setCenter(Vector2(50,graph1.getSize().y*0.5))
-print 'size/2',graph1.getSize().x*0.5
-print 'ylabel',ylabel1.getCenter()
-ylabel1.setRotation(-90)
+# ylabel1 = Label.create(graph1)
+# ylabel1.setText('hehehehehe')
+# ylabel1.setColor(Color('white'))
+# if CAVE():
+# 	ylabel1.setFont('fonts/arial.ttf 76')
+# else:
+# 	ylabel1.setFont('fonts/arial.ttf 14')
+# ylabel1.setCenter(Vector2(50,graph1.getSize().y*0.5))
+# print 'size/2',graph1.getSize().x*0.5
+# print 'ylabel',ylabel1.getCenter()
+# ylabel1.setRotation(-90)
 
 ## create graph 2
 # graph2 = Container.create(ContainerLayout.LayoutFree, ui.getUi())
@@ -2511,11 +2661,4 @@ def final_highlight_box_blue(box, highlight):
 		else:
 			box.setEffect('colored -e #01b2f144')
 			box.getMaterial().setTransparent(True)
-
-def test(hl):
-	global li_boxOnWall
-	final_highlight_box(li_boxOnWall[0], hl)
-
-
-
 
