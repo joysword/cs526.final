@@ -334,6 +334,9 @@ class Dot:
 	def setImage(self,_image):
 		self.image = _image
 
+	def getImage(self):
+		return self.image
+
 
 ##############################################################################################################
 # PLAY SOUND
@@ -1800,376 +1803,6 @@ def addCenter(verticalHeight, theSys):
 	## end here
 
 ##############################################################################################################
-# EVENT FUNCTION
-
-laser = Image.create(ui.getUi())
-laser.setData(loadImage('laser_dot.png'))
-laser.setCenter(Vector2(100,100))
-laser.setVisible(True)
-
-def onEvent():
-	global g_scale_size
-	global g_scale_dist
-	global g_scale_time
-
-	global g_reorder
-	global g_moveToCenter
-
-	global pointer
-
-	global isButton7down
-	global wandOldPos
-	global wandOldOri
-
-	global num_reorder
-	global box_reorder
-
-	global sn_smallMulti
-
-	global li_textUniv
-
-	global text_univ_highlight
-
-	global g_curOrder
-
-	global g_curCenSys
-
-	global g_showInfo
-	global g_showNews
-
-	global g_cur_highlight_box
-	global g_cur_highlight_box_blue
-
-	global g_cur_highlight_i
-	global g_cur_highlight_i_blue
-
-	global laser
-
-	e = getEvent()
-
-	if e.getServiceType()==ServiceType.Wand:
-		wandPos = e.getPosition()
-		wandOri = e.getOrientation()
-		refVec = Vector3(0.0, 0.0, -1.0)
-		v = wandOri*refVec
-
-		loc = CoordinateCalculator()
-		loc.set_position(wandPos.x, wandPos.y, wandPos.z)
-		loc.set_orientation(v.x, v.y, v.z)
-		loc.calculate()
-		twod_x = int(loc.get_x() * 24588)
-		twod_y = int(loc.get_y() *  3072)
-
-		laser.setCenter(Vector2(twod_x,twod_y))
-
-	## normal operations
-	if g_reorder==0 and g_moveToCenter==0 and g_showInfo==False and g_showNews==False:
-		#print 'normal operation'
-		if e.isButtonDown(EventFlags.ButtonLeft) or e.isKeyDown(ord('j')):
-			#print 'start dist -'
-			if not changeScale('dist',False):
-				playSound(sd_warn, e.getPosition(), 0.5)
-		elif e.isButtonDown(EventFlags.ButtonRight) or e.isKeyDown(ord('l')):
-			#print 'start dist +'
-			if not changeScale('dist',True):
-				playSound(sd_warn, e.getPosition(), 0.5)
-		elif e.isButtonDown(EventFlags.ButtonUp) or e.isKeyDown(ord('i')):
-			#print 'start size +'
-			if not changeScale('size',True):
-				playSound(sd_warn, e.getPosition(), 0.5)
-		elif e.isButtonDown(EventFlags.ButtonDown) or e.isKeyDown(ord('k')):
-			#print 'start size -'
-			if not changeScale('size',False):
-				playSound(sd_warn, e.getPosition(), 0.5)
-		elif e.isKeyDown(ord('u')):
-			#print 'start time -'
-			if not changeScale('time',False):
-				playSound(sd_warn, e.getPosition(), 0.5)
-		elif e.isKeyDown(ord('o')):
-			#print 'start time +'
-			if not changeScale('time',True):
-				playSound(sd_warn, e.getPosition(), 0.5)
-
-		## navigation
-		elif (e.isButtonDown(EventFlags.Button7)):
-			if isButton7down==False:
-				isButton7down = True
-				wandOldPos = e.getPosition()
-				wandOldOri = e.getOrientation()
-				#print "wandOldPos:",wandOldPos
-				#print "wandOldOri:",wandOldOri
-		elif (e.isButtonUp(EventFlags.Button7)):
-			isButton7down = False
-		elif e.getServiceType() == ServiceType.Wand:
-			if isButton7down:
-				#print 'button7isdown'
-				trans = e.getPosition()-wandOldPos
-				#cam.setPosition( cam.convertLocalToWorldPosition( trans*cam.getController().getSpeed() ) )
-				cam.translate( trans*cam.getController().getSpeed(), Space.Local)
-				oriVecOld = quaternionToEuler(wandOldOri)
-				oriVec = quaternionToEuler(e.getOrientation())
-				cam.rotate( oriVec-oriVecOld, 2*math.pi/180, Space.Local )
-
-	elif g_showInfo:
-		#print 'showing info'
-		if e.isButtonDown(EventFlags.Button3) or e.isButtonDown(EventFlags.Button2):
-			legend_p.setVisible(False)
-			legend_s.setVisible(False)
-			g_showInfo=False
-
-	elif g_showNews:
-		#print 'showing news'
-		if e.isButtonDown(EventFlags.Button3) or e.isButtonDown(EventFlags.Button2):
-			#print 'here'
-			legend_p.setVisible(False)
-			legend_s.setVisible(False)
-			g_showNews=False
-		elif e.isButtonDown(EventFlags.ButtonUp):
-			#print 'here11'
-			pos = legend_s.getPosition()
-			#print pos
-			legend_s.setPosition(Vector2(pos[0],pos[1]+100))
-			#print legend_s.getPosition()
-			e.setProcessed()
-		elif e.isButtonDown(EventFlags.ButtonDown):
-			#print 'here22'
-			pos = legend_s.getPosition()
-			#print pos
-			legend_s.setPosition(Vector2(pos[0],pos[1]-100))
-			#print legend_s.getPosition()
-			e.setProcessed()
-
-	## move to center
-	elif g_moveToCenter==1:
-		if e.isButtonDown(EventFlags.Button3):
-			e.setProcessed()
-			g_moveToCenter=0
-			pointer.setVisible(False)
-			playSound(sd_mtc_quit, cam.getPosition(), 0.5)
-			print ('quit move to center mode')
-			# quit highlight
-			final_highlight_box(g_cur_highlight_box,False)
-			g_cur_highlight_box = None
-		else:
-			r = getRayFromEvent(e)
-			for i in xrange(c_SMALLMULTI_NUMBER):
-				node = li_boxOnWall[i]
-				hitData = hitNode(node, r[1], r[2])
-				if hitData[0]:
-					if node!=g_cur_highlight_box:
-						# print '\n'
-						# print 'node != g_cur_highlight_box: node:',node,'g_cur: ',g_cur_highlight_box
-						# print 'node name:',node.getParent().getName()
-						# if g_cur_highlight_box!=None:
-						# 	print 'g_cur name:',g_cur_highlight_box.getParent().getName()
-						final_highlight_box(node,True)
-						final_highlight_box(g_cur_highlight_box,False)
-						g_cur_highlight_box=node
-						print 'change'
-						# print 'node',node
-						# print 'g_cur_highlight_box',g_cur_highlight_box
-						# print 'node name:',node.getParent().getName()
-						# if g_cur_highlight_box!=None:
-						# 	print 'g_cur name:',g_cur_highlight_box.getParent().getName()
-						# print '\n'
-					pointer.setPosition(hitData[1])
-					if e.isButtonDown(EventFlags.Button2):
-						e.setProcessed()
-						if dic_boxToSys[node]!=None:
-							if text_univ_highlight!=None:
-								text_univ_highlight.setColor(Color('white'))
-							li_textUniv[i].setColor(Color('red'))
-							text_univ_highlight = li_textUniv[i]
-							addCenter(1.3,dic_boxToSys[node])
-							g_curCenSys = dic_boxToSys[node]
-							pointer.setVisible(False)
-							g_moveToCenter=0
-							playSound(sd_mtc_moving, cam.getPosition(), 0.5)
-							# quit highlight
-							final_highlight_box(g_cur_highlight_box,False)
-							g_cur_highlight_box = None
-					break
-
-	## choose to reorder
-	elif g_reorder==1:
-		# quit reorder mode
-		if e.isButtonDown(EventFlags.Button3):
-			e.setProcessed()
-			g_reorder=0
-			pointer.setVisible(False)
-			playSound(sd_reo_quit, cam.getPosition(), 0.5)
-			if g_cur_highlight_i != -100:
-				final_highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)
-				g_cur_highlight_i=-100
-			if g_cur_highlight_i_blue != -100:
-				final_highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByIndex(0),False)
-				g_cur_highlight_i_blue=-100
-			print 'quit reorder mode'
-			# quit highlight
-		else:
-			r = getRayFromEvent(e)
-			for i in xrange(sn_smallMulti.numChildren()):
-				sn_smallTrans = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[i]))
-				node = sn_smallTrans.getChildByName('boxParent'+str(g_curOrder[i])).getChildByIndex(0)
-				hitData = hitNode(node, r[1], r[2])
-				if hitData[0]==True:
-					if i!=g_cur_highlight_i: #if g_cur_highlight_box==None or node.getParent()!=g_cur_highlight_box.getParent():
-						final_highlight_box(node,True)
-						if g_cur_highlight_i!=-100:
-							final_highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)#final_highlight_box(g_cur_highlight_box,False)
-						g_cur_highlight_i=i # g_cur_highlight_box = node
-					pointer.setPosition(hitData[1])
-					# select a box
-					if e.isButtonDown(EventFlags.Button2):
-						e.setProcessed()
-						g_reorder=2
-						final_highlight_box_blue(node,True)
-						g_cur_highlight_i_blue = i
-						print 'box color changed to BLUE'
-						num_reorder = i # record this node's order
-						box_reorder = node # record this node
-						playSound(sd_reo_selected, cam.getPosition(), 0.5)
-					break
-
-	## move to reorder
-	elif g_reorder==2:
-		# cancel selection
-		if e.isButtonDown(EventFlags.Button3):
-			e.setProcessed()
-			g_reorder=1
-			playSound(sd_reo_canceled, cam.getPosition(), 0.5)
- 			print ('cenceled')
- 			# quit highlight blue
- 			final_highlight_box_blue(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByIndex(0),False)
-			g_cur_highlight_i_blue = -100
-			print 'BLUE CANCELED'
- 		else:
-			r = getRayFromEvent(e)
-			for i in xrange(sn_smallMulti.numChildren()):
-				sn_smallTrans = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[i]))
-				node = sn_smallTrans.getChildByName('boxParent'+str(g_curOrder[i])).getChildByIndex(0)
-				hitData = hitNode(node, r[1], r[2])
-				if hitData[0]:
-					if i!=g_cur_highlight_i and i!=g_cur_highlight_i_blue:#if node!=g_cur_highlight_box and node!=g_cur_highlight_box_blue:
-						final_highlight_box(node,True)
-						if g_cur_highlight_i!=-100 and g_cur_highlight_i!=g_cur_highlight_i_blue:
-							final_highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)
-						g_cur_highlight_i=i
-						print 'RED CHANGED'
-					pointer.setPosition(hitData[1])
-			 		# select another box
-			 		if e.isButtonDown(EventFlags.Button2):
-			 			e.setProcessed()
-			 			if i != num_reorder:
-			 				#node.setEffect('colored -e #3274cc44') # change color to mark it
-			 				curPos = sn_smallTrans.getPosition()
-			 				curOri = sn_smallTrans.getOrientation()
-			 				if i<num_reorder:
-			 					for j in xrange(i,num_reorder):
-			 						n = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[j]))
-			 						n1 = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[j+1]))
-			 						n.setPosition(n1.getPosition())
-			 						n.setOrientation(n1.getOrientation())
-			 					n = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[num_reorder]))
-			 					n.setPosition(curPos)
-			 					n.setOrientation(curOri)
-
-			 					# update g_curOrder
-			 					tmpNum = g_curOrder[num_reorder]
-			 					j = num_reorder
-		 						while j>i:
-		 							g_curOrder[j]=g_curOrder[j-1]
-		 							j-=1
-		 						g_curOrder[i]=tmpNum
-
-			 				else: # num_reorder<i
-			 					j = i
-			 					while j>num_reorder:
-			 						n = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[j]))
-			 						n1 = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[j-1]))
-			 						n.setPosition(n1.getPosition())
-			 						n.setOrientation(n1.getOrientation())
-			 						j-=1
-			 					n = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[num_reorder]))
-			 					n.setPosition(curPos)
-			 					n.setOrientation(curOri)
-
-			 					#update g_curOrder
-			 					tmpNum = g_curOrder[num_reorder]
-			 					for j in xrange(num_reorder,i):
-			 						g_curOrder[j]=g_curOrder[j+1]
-			 					g_curOrder[i]=tmpNum
-			 					for j in xrange(c_SMALLMULTI_NUMBER):
-			 						print 'g_curOrder['+str(j)+']:',g_curOrder[j]
-			 				playSound(sd_reo_done, cam.getPosition(), 0.5)
-			 				g_reorder=1
-			 				# quit highlight
-			 				final_highlight_box_blue(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByIndex(0),False)
-			 				g_cur_highlight_i_blue = -100
-			 				print 'BLUE CANCELED'
-			 				final_highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)
-			 				g_cur_highlight_i = -100
-			 				print 'RED CANCELED'
-			 		break
-
-		# for node in li_boxOnWall:
-		# 	hitData = hitNode(node, r[1], r[2])
-		# 	if hitData[0]:
-		# 		pointer.setPosition(hitData[1])
-		# 		if e.isButtonDown(EventFlags.Button3):
-		# 			e.setProcessed()
-		# 			g_reorder=1
-		#			box_reorder.setEffect('colored -e #01b2f144') # restore original color
-		# 			playSound(sd_reo_canceled, cam.getPosition(), 0.5)
-		# 			playSound(sd_reo_please, cam.getPosition(), 0.5)
-		# 		elif e.isButtonDown(EventFlags.Button2):
-		# 			if node != box_reorder:
-
-		# 	break
-
-setEventFunction(onEvent)
-
-##############################################################################################################
-# UPDATE FUNCTION
-
-def onUpdate(frame, t, dt):
-	global g_orbit
-	global g_rot
-	global g_scale_time
-
-	global bgmDeltaT
-
-	# ALL THINGS IN 3D ROTATE AS TIME PASSES BY
-	for o,y in g_orbit:
-		#i[0].yaw(dt/40*g_scale_time*(1.0/i[1])
-		o.yaw(dt/40*g_scale_time*(1.0/y))
-	for o,d in g_rot:
-		#i[0].yaw(dt/40*g_scale_time*365*(1.0/i[1]))
-		o.yaw(dt/40*365*g_scale_time*(1.0/d))
-
-	for o,y in g_cen_orbit:
-		#i[0].yaw(dt/40*g_scale_time*(1.0/i[1])
-		if y==0:
-			continue
-		o.yaw(dt/40*g_scale_time*(1.0/y))
-	for o,d in g_cen_rot:
-		#i[0].yaw(dt/40*g_scale_time*365*(1.0/i[1]))
-		if d==0:
-			continue
-		o.yaw(dt/40*365*g_scale_time*(1.0/d))
-
-	# 3d universe
-	sn_univParent.yaw(dt/20)
-
-	# replay bgm
-	if t-bgmDeltaT>=68:
-		print "replaying bgm"
-		bgmDeltaT = t
-		playSound(sd_bgm,InitCamPos,0.05)
-
-setUpdateFunction(onUpdate)
-
-##############################################################################################################
 # UTILITITIES FUNCTIONS
 
 ## recursively get all inivisible nodes below this node
@@ -2702,10 +2335,423 @@ def updateGraph():
 		dot = li_dotOnWall[i]
 		img = Image.create(graph1)
 		img.setData(imgData)
-		img.setSize(Vector2(20,20))
+		#img.setSize(Vector2(,20))
+		dot.setImage(img)
 		if CAVE():
 			img.setCenter(Vector2(i*10,dot.getPla()._size/max_size*1360*2))
 		else:
 			img.setCenter(Vector2(i*30,dot.getPla()._size/max_size*1360*2*0.2))
 
 updateGraph()
+
+def showInfoForDot(dot):
+	global g_showInfo
+
+	g_showInfo = True
+
+	if dot.getSys()._hasInfo_s:
+		legend_s.setData(loadImage('pic_s/'+dot.getSys()._name.replace(' ','_')+'.png'))
+		legend_s.setSize(legend_s.getSize()*1.5)
+	else:
+		legend_s.setData(loadImage('pic_s/no_info.png'))
+	if dot.getSys()._hasInfo_p:
+		legend_p.setData(loadImage('pic_p/'+dot.getSys()._name.replace(' ','_')+'.png'))
+		legend_p.setSize(legend_p.getSize()*1.5)
+	else:
+		legend_p.setData(loadImage('pic_p/no_info.png'))
+	legend_s.setVisible(True)
+	legend_p.setVisible(True)
+	legend_s.setPosition(Vector2(15100,0))
+	legend_p.setPosition(Vector2(15000 - legend_p.getSize()[0],800))
+
+	print 'done loading image'
+
+##############################################################################################################
+# EVENT FUNCTION
+
+laser = Image.create(ui.getUi())
+laser.setData(loadImage('laser_dot.png'))
+laser.setCenter(Vector2(100,100))
+laser.setVisible(True)
+
+def onEvent():
+	global g_scale_size
+	global g_scale_dist
+	global g_scale_time
+
+	global g_reorder
+	global g_moveToCenter
+
+	global pointer
+
+	global isButton7down
+	global wandOldPos
+	global wandOldOri
+
+	global num_reorder
+	global box_reorder
+
+	global sn_smallMulti
+
+	global li_textUniv
+
+	global text_univ_highlight
+
+	global g_curOrder
+
+	global g_curCenSys
+
+	global g_showInfo
+	global g_showNews
+
+	global g_cur_highlight_box
+	global g_cur_highlight_box_blue
+
+	global g_cur_highlight_i
+	global g_cur_highlight_i_blue
+
+	global laser
+
+	global li_dotOnWall
+
+	e = getEvent()
+
+	if e.getServiceType()==ServiceType.Wand:
+		wandPos = e.getPosition()
+		wandOri = e.getOrientation()
+		refVec = Vector3(0.0, 0.0, -1.0)
+		v = wandOri*refVec
+
+		loc = CoordinateCalculator()
+		loc.set_position(wandPos.x, wandPos.y, wandPos.z)
+		loc.set_orientation(v.x, v.y, v.z)
+		loc.calculate()
+		twod_x = int(loc.get_x() * 24588)
+		twod_y = int(loc.get_y() *  3072)
+
+		#laser.setCenter(Vector2(twod_x,twod_y))
+
+		if graph1.hitTest(Vector2(twod_x,twod_y)):
+			laser.setCenter(Vector2(twod_x,twod_y))
+			for i in xrange(len(li_dotOnWall)):
+				dot = li_dotOnWall[i]
+				if dot.getImage().hitTest(Vector2(twod_x, twod_y)):
+					dot.getImage().setScale(2)
+					if e.isButtonDown(EventFlags.Button2):
+						showInfoForDot(dot)
+						e.setProcessed()
+						return None
+				else:
+					dot.getImage().setScale(1)
+
+			e.setProcessed()
+			return None
+		else:
+			laser.setCenter(Vector2(25000,0))
+
+	## normal operations
+	if g_reorder==0 and g_moveToCenter==0 and g_showInfo==False and g_showNews==False:
+		#print 'normal operation'
+		if e.isButtonDown(EventFlags.ButtonLeft) or e.isKeyDown(ord('j')):
+			#print 'start dist -'
+			if not changeScale('dist',False):
+				playSound(sd_warn, e.getPosition(), 0.5)
+		elif e.isButtonDown(EventFlags.ButtonRight) or e.isKeyDown(ord('l')):
+			#print 'start dist +'
+			if not changeScale('dist',True):
+				playSound(sd_warn, e.getPosition(), 0.5)
+		elif e.isButtonDown(EventFlags.ButtonUp) or e.isKeyDown(ord('i')):
+			#print 'start size +'
+			if not changeScale('size',True):
+				playSound(sd_warn, e.getPosition(), 0.5)
+		elif e.isButtonDown(EventFlags.ButtonDown) or e.isKeyDown(ord('k')):
+			#print 'start size -'
+			if not changeScale('size',False):
+				playSound(sd_warn, e.getPosition(), 0.5)
+		elif e.isKeyDown(ord('u')):
+			#print 'start time -'
+			if not changeScale('time',False):
+				playSound(sd_warn, e.getPosition(), 0.5)
+		elif e.isKeyDown(ord('o')):
+			#print 'start time +'
+			if not changeScale('time',True):
+				playSound(sd_warn, e.getPosition(), 0.5)
+
+		## navigation
+		elif (e.isButtonDown(EventFlags.Button7)):
+			if isButton7down==False:
+				isButton7down = True
+				wandOldPos = e.getPosition()
+				wandOldOri = e.getOrientation()
+				#print "wandOldPos:",wandOldPos
+				#print "wandOldOri:",wandOldOri
+		elif (e.isButtonUp(EventFlags.Button7)):
+			isButton7down = False
+		elif e.getServiceType() == ServiceType.Wand:
+			if isButton7down:
+				#print 'button7isdown'
+				trans = e.getPosition()-wandOldPos
+				#cam.setPosition( cam.convertLocalToWorldPosition( trans*cam.getController().getSpeed() ) )
+				cam.translate( trans*cam.getController().getSpeed(), Space.Local)
+				oriVecOld = quaternionToEuler(wandOldOri)
+				oriVec = quaternionToEuler(e.getOrientation())
+				cam.rotate( oriVec-oriVecOld, 2*math.pi/180, Space.Local )
+
+	elif g_showInfo:
+		#print 'showing info'
+		if e.isButtonDown(EventFlags.Button3) or e.isButtonDown(EventFlags.Button2):
+			legend_p.setVisible(False)
+			legend_s.setVisible(False)
+			g_showInfo=False
+
+	elif g_showNews:
+		#print 'showing news'
+		if e.isButtonDown(EventFlags.Button3) or e.isButtonDown(EventFlags.Button2):
+			#print 'here'
+			legend_p.setVisible(False)
+			legend_s.setVisible(False)
+			g_showNews=False
+		elif e.isButtonDown(EventFlags.ButtonUp):
+			#print 'here11'
+			pos = legend_s.getPosition()
+			#print pos
+			legend_s.setPosition(Vector2(pos[0],pos[1]+100))
+			#print legend_s.getPosition()
+			e.setProcessed()
+		elif e.isButtonDown(EventFlags.ButtonDown):
+			#print 'here22'
+			pos = legend_s.getPosition()
+			#print pos
+			legend_s.setPosition(Vector2(pos[0],pos[1]-100))
+			#print legend_s.getPosition()
+			e.setProcessed()
+
+	## move to center
+	elif g_moveToCenter==1:
+		if e.isButtonDown(EventFlags.Button3):
+			e.setProcessed()
+			g_moveToCenter=0
+			pointer.setVisible(False)
+			playSound(sd_mtc_quit, cam.getPosition(), 0.5)
+			print ('quit move to center mode')
+			# quit highlight
+			final_highlight_box(g_cur_highlight_box,False)
+			g_cur_highlight_box = None
+		else:
+			r = getRayFromEvent(e)
+			for i in xrange(c_SMALLMULTI_NUMBER):
+				node = li_boxOnWall[i]
+				hitData = hitNode(node, r[1], r[2])
+				if hitData[0]:
+					if node!=g_cur_highlight_box:
+						# print '\n'
+						# print 'node != g_cur_highlight_box: node:',node,'g_cur: ',g_cur_highlight_box
+						# print 'node name:',node.getParent().getName()
+						# if g_cur_highlight_box!=None:
+						# 	print 'g_cur name:',g_cur_highlight_box.getParent().getName()
+						final_highlight_box(node,True)
+						final_highlight_box(g_cur_highlight_box,False)
+						g_cur_highlight_box=node
+						print 'change'
+						# print 'node',node
+						# print 'g_cur_highlight_box',g_cur_highlight_box
+						# print 'node name:',node.getParent().getName()
+						# if g_cur_highlight_box!=None:
+						# 	print 'g_cur name:',g_cur_highlight_box.getParent().getName()
+						# print '\n'
+					pointer.setPosition(hitData[1])
+					if e.isButtonDown(EventFlags.Button2):
+						e.setProcessed()
+						if dic_boxToSys[node]!=None:
+							if text_univ_highlight!=None:
+								text_univ_highlight.setColor(Color('white'))
+							li_textUniv[i].setColor(Color('red'))
+							text_univ_highlight = li_textUniv[i]
+							addCenter(1.3,dic_boxToSys[node])
+							g_curCenSys = dic_boxToSys[node]
+							pointer.setVisible(False)
+							g_moveToCenter=0
+							playSound(sd_mtc_moving, cam.getPosition(), 0.5)
+							# quit highlight
+							final_highlight_box(g_cur_highlight_box,False)
+							g_cur_highlight_box = None
+					break
+
+	## choose to reorder
+	elif g_reorder==1:
+		# quit reorder mode
+		if e.isButtonDown(EventFlags.Button3):
+			e.setProcessed()
+			g_reorder=0
+			pointer.setVisible(False)
+			playSound(sd_reo_quit, cam.getPosition(), 0.5)
+			if g_cur_highlight_i != -100:
+				final_highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)
+				g_cur_highlight_i=-100
+			if g_cur_highlight_i_blue != -100:
+				final_highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByIndex(0),False)
+				g_cur_highlight_i_blue=-100
+			print 'quit reorder mode'
+			# quit highlight
+		else:
+			r = getRayFromEvent(e)
+			for i in xrange(sn_smallMulti.numChildren()):
+				sn_smallTrans = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[i]))
+				node = sn_smallTrans.getChildByName('boxParent'+str(g_curOrder[i])).getChildByIndex(0)
+				hitData = hitNode(node, r[1], r[2])
+				if hitData[0]==True:
+					if i!=g_cur_highlight_i: #if g_cur_highlight_box==None or node.getParent()!=g_cur_highlight_box.getParent():
+						final_highlight_box(node,True)
+						if g_cur_highlight_i!=-100:
+							final_highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)#final_highlight_box(g_cur_highlight_box,False)
+						g_cur_highlight_i=i # g_cur_highlight_box = node
+					pointer.setPosition(hitData[1])
+					# select a box
+					if e.isButtonDown(EventFlags.Button2):
+						e.setProcessed()
+						g_reorder=2
+						final_highlight_box_blue(node,True)
+						g_cur_highlight_i_blue = i
+						print 'box color changed to BLUE'
+						num_reorder = i # record this node's order
+						box_reorder = node # record this node
+						playSound(sd_reo_selected, cam.getPosition(), 0.5)
+					break
+
+	## move to reorder
+	elif g_reorder==2:
+		# cancel selection
+		if e.isButtonDown(EventFlags.Button3):
+			e.setProcessed()
+			g_reorder=1
+			playSound(sd_reo_canceled, cam.getPosition(), 0.5)
+ 			print ('cenceled')
+ 			# quit highlight blue
+ 			final_highlight_box_blue(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByIndex(0),False)
+			g_cur_highlight_i_blue = -100
+			print 'BLUE CANCELED'
+ 		else:
+			r = getRayFromEvent(e)
+			for i in xrange(sn_smallMulti.numChildren()):
+				sn_smallTrans = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[i]))
+				node = sn_smallTrans.getChildByName('boxParent'+str(g_curOrder[i])).getChildByIndex(0)
+				hitData = hitNode(node, r[1], r[2])
+				if hitData[0]:
+					if i!=g_cur_highlight_i and i!=g_cur_highlight_i_blue:#if node!=g_cur_highlight_box and node!=g_cur_highlight_box_blue:
+						final_highlight_box(node,True)
+						if g_cur_highlight_i!=-100 and g_cur_highlight_i!=g_cur_highlight_i_blue:
+							final_highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)
+						g_cur_highlight_i=i
+						print 'RED CHANGED'
+					pointer.setPosition(hitData[1])
+			 		# select another box
+			 		if e.isButtonDown(EventFlags.Button2):
+			 			e.setProcessed()
+			 			if i != num_reorder:
+			 				#node.setEffect('colored -e #3274cc44') # change color to mark it
+			 				curPos = sn_smallTrans.getPosition()
+			 				curOri = sn_smallTrans.getOrientation()
+			 				if i<num_reorder:
+			 					for j in xrange(i,num_reorder):
+			 						n = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[j]))
+			 						n1 = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[j+1]))
+			 						n.setPosition(n1.getPosition())
+			 						n.setOrientation(n1.getOrientation())
+			 					n = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[num_reorder]))
+			 					n.setPosition(curPos)
+			 					n.setOrientation(curOri)
+
+			 					# update g_curOrder
+			 					tmpNum = g_curOrder[num_reorder]
+			 					j = num_reorder
+		 						while j>i:
+		 							g_curOrder[j]=g_curOrder[j-1]
+		 							j-=1
+		 						g_curOrder[i]=tmpNum
+
+			 				else: # num_reorder<i
+			 					j = i
+			 					while j>num_reorder:
+			 						n = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[j]))
+			 						n1 = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[j-1]))
+			 						n.setPosition(n1.getPosition())
+			 						n.setOrientation(n1.getOrientation())
+			 						j-=1
+			 					n = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[num_reorder]))
+			 					n.setPosition(curPos)
+			 					n.setOrientation(curOri)
+
+			 					#update g_curOrder
+			 					tmpNum = g_curOrder[num_reorder]
+			 					for j in xrange(num_reorder,i):
+			 						g_curOrder[j]=g_curOrder[j+1]
+			 					g_curOrder[i]=tmpNum
+			 					for j in xrange(c_SMALLMULTI_NUMBER):
+			 						print 'g_curOrder['+str(j)+']:',g_curOrder[j]
+			 				playSound(sd_reo_done, cam.getPosition(), 0.5)
+			 				g_reorder=1
+			 				# quit highlight
+			 				final_highlight_box_blue(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByIndex(0),False)
+			 				g_cur_highlight_i_blue = -100
+			 				print 'BLUE CANCELED'
+			 				final_highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)
+			 				g_cur_highlight_i = -100
+			 				print 'RED CANCELED'
+			 		break
+
+		# for node in li_boxOnWall:
+		# 	hitData = hitNode(node, r[1], r[2])
+		# 	if hitData[0]:
+		# 		pointer.setPosition(hitData[1])
+		# 		if e.isButtonDown(EventFlags.Button3):
+		# 			e.setProcessed()
+		# 			g_reorder=1
+		#			box_reorder.setEffect('colored -e #01b2f144') # restore original color
+		# 			playSound(sd_reo_canceled, cam.getPosition(), 0.5)
+		# 			playSound(sd_reo_please, cam.getPosition(), 0.5)
+		# 		elif e.isButtonDown(EventFlags.Button2):
+		# 			if node != box_reorder:
+
+		# 	break
+
+setEventFunction(onEvent)
+
+##############################################################################################################
+# UPDATE FUNCTION
+
+def onUpdate(frame, t, dt):
+	global g_orbit
+	global g_rot
+	global g_scale_time
+
+	global bgmDeltaT
+
+	# ALL THINGS IN 3D ROTATE AS TIME PASSES BY
+	for o,y in g_orbit:
+		#i[0].yaw(dt/40*g_scale_time*(1.0/i[1])
+		o.yaw(dt/40*g_scale_time*(1.0/y))
+	for o,d in g_rot:
+		#i[0].yaw(dt/40*g_scale_time*365*(1.0/i[1]))
+		o.yaw(dt/40*365*g_scale_time*(1.0/d))
+
+	for o,y in g_cen_orbit:
+		#i[0].yaw(dt/40*g_scale_time*(1.0/i[1])
+		if y==0:
+			continue
+		o.yaw(dt/40*g_scale_time*(1.0/y))
+	for o,d in g_cen_rot:
+		#i[0].yaw(dt/40*g_scale_time*365*(1.0/i[1]))
+		if d==0:
+			continue
+		o.yaw(dt/40*365*g_scale_time*(1.0/d))
+
+	# 3d universe
+	sn_univParent.yaw(dt/20)
+
+	# replay bgm
+	if t-bgmDeltaT>=68:
+		print "replaying bgm"
+		bgmDeltaT = t
+		playSound(sd_bgm,InitCamPos,0.05)
+
+setUpdateFunction(onUpdate)
