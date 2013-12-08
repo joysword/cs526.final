@@ -71,7 +71,7 @@ set_nearest = []
 set_most_planets = []
 set_farthest = []
 set_g_type = []
-set_save = [None]*48
+set_save = [None]*c_SMALLMULTI_NUMBER
 
 ## constants
 
@@ -322,7 +322,7 @@ def playSound(sd, pos, vol):
 	sd.setPosition(pos)
 	sd.setVolume(vol)
 	sd.setWidth(20)
-	sd.play()
+	#sd.play()
 
 ##############################################################################################################
 # CREATE MENUS
@@ -676,13 +676,13 @@ def initUniv(preset):
 	li_textUniv = []
 
 	maxDis = 0
-	for i in xrange(48):
+	for i in xrange(c_SMALLMULTI_NUMBER):
 		if preset[i]!=-1:
 			curSys = li_allSys[preset[i]]
 			if curSys._dis>maxDis:
 				maxDis = curSys._dis
 
-	for i in xrange(48):
+	for i in xrange(c_SMALLMULTI_NUMBER):
 		if preset[i]!=-1:
 			curSys = li_allSys[preset[i]]
 			star = SphereShape.create(math.sqrt(curSys._star._size * c_scaleUniv_size), 4)
@@ -772,374 +772,175 @@ def initSmallMulti(preset):
 
 	smallCount = 0
 
-	for col in xrange(0, 9):
+	for col in xrange(0, 8):
 
 		# leave a 'hole' in the center of the cave to see the far planets through
 		if col>=3 and col<=5:
 			continue
 
-		print 'col:',col
+		#print 'col:',col
 
-		if col<7:
-			for row in xrange(0, 8):
+		for row in xrange(0, 8):
 
-				sn_smallTrans = SceneNode.create('smallTrans'+str(g_curOrder[smallCount]))
+			sn_smallTrans = SceneNode.create('smallTrans'+str(g_curOrder[smallCount]))
 
-				hLoc = (8-col) + 1.5
-				degreeConvert = 0.2*math.pi # 36 degrees per column
-				sn_smallTrans.setPosition(Vector3(math.sin(hLoc*degreeConvert)*caveRadius, (7-row) * 0.29 + 0.41, math.cos(hLoc*degreeConvert)*caveRadius))
-				sn_smallTrans.yaw(hLoc*degreeConvert)
-				sn_smallMulti.addChild(sn_smallTrans)
+			hLoc = (8-col) + 1.5
+			degreeConvert = 0.2*math.pi # 36 degrees per column
+			sn_smallTrans.setPosition(Vector3(math.sin(hLoc*degreeConvert)*caveRadius, (7-row) * 0.29 + 0.41, math.cos(hLoc*degreeConvert)*caveRadius))
+			sn_smallTrans.yaw(hLoc*degreeConvert)
+			sn_smallMulti.addChild(sn_smallTrans)
 
-				sn_boxParent = SceneNode.create('boxParent'+str(g_curOrder[smallCount]))
-				sn_smallTrans.addChild(sn_boxParent)
+			sn_boxParent = SceneNode.create('boxParent'+str(g_curOrder[smallCount]))
+			sn_smallTrans.addChild(sn_boxParent)
 
-				bs_outlineBox = BoxShape.create(2.0, 0.25, 0.001)
-				bs_outlineBox.setPosition(Vector3(-0.5, 0, 0.01))
-				bs_outlineBox.setEffect('colored -e #01b2f144')
-				bs_outlineBox.getMaterial().setTransparent(True)
-				sn_boxParent.addChild(bs_outlineBox)
+			bs_outlineBox = BoxShape.create(2.0, 0.25, 0.001)
+			bs_outlineBox.setPosition(Vector3(-0.5, 0, 0.01))
+			bs_outlineBox.setEffect('colored -e #01b2f144')
+			bs_outlineBox.getMaterial().setTransparent(True)
+			sn_boxParent.addChild(bs_outlineBox)
 
-				li_boxOnWall.append(bs_outlineBox)
-				set_save[g_curOrder[smallCount]] = preset[g_curOrder[smallCount]]
+			li_boxOnWall.append(bs_outlineBox)
+			set_save[g_curOrder[smallCount]] = preset[g_curOrder[smallCount]]
 
-				dic_boxToSys[bs_outlineBox] = None
-				dic_countToSys[g_curOrder[smallCount]] = None
+			dic_boxToSys[bs_outlineBox] = None
+			dic_countToSys[g_curOrder[smallCount]] = None
 
-				if preset[g_curOrder[smallCount]]!=-1:
-					curSys = li_allSys[preset[g_curOrder[smallCount]]]
+			if preset[g_curOrder[smallCount]]!=-1:
+				curSys = li_allSys[preset[g_curOrder[smallCount]]]
 
-					dic_boxToSys[bs_outlineBox] = curSys
-					dic_countToSys[g_curOrder[smallCount]] = curSys
+				dic_boxToSys[bs_outlineBox] = curSys
+				dic_countToSys[g_curOrder[smallCount]] = curSys
 
-					sn_smallSys = SceneNode.create('smallSys'+str(g_curOrder[smallCount]))
+				sn_smallSys = SceneNode.create('smallSys'+str(g_curOrder[smallCount]))
 
-					## get star
-					bs_model = BoxShape.create(100, 25000, 2000)
-					bs_model.setPosition(Vector3(0.0, 0.0, 48000))# - thisSystem[name][1] * XorbitScaleFactor * user2ScaleFactor))
-					bs_model.setEffect('textured -v emissive -d '+curSys._star._texture)
-					sn_smallSys.addChild(bs_model)
+				## get star
+				bs_model = BoxShape.create(100, 25000, 2000)
+				bs_model.setPosition(Vector3(0.0, 0.0, 48000))# - thisSystem[name][1] * XorbitScaleFactor * user2ScaleFactor))
+				bs_model.setEffect('textured -v emissive -d '+curSys._star._texture)
+				sn_smallSys.addChild(bs_model)
 
-					## get habitable zone if it is in the range
-					habOuter = curSys._star._habFar
-					habInner = curSys._star._habNear
+				## get habitable zone if it is in the range
+				habOuter = curSys._star._habFar
+				habInner = curSys._star._habNear
 
-					sn_habiParent = SceneNode.create('habiParent'+str(g_curOrder[smallCount]))
+				sn_habiParent = SceneNode.create('habiParent'+str(g_curOrder[smallCount]))
 
-					bs_habi = BoxShape.create(1, 1, 1)
+				bs_habi = BoxShape.create(1, 1, 1)
 
-					if habInner < wallLimit:
-						if habOuter > wallLimit:
-							habOuter = wallLimit
-						habCenter = (habOuter+habInner)/2.0
-					else:
-						habCenter = (habOuter+habInner)/2.0
-						bs_habi.setVisible(False)
+				if habInner < wallLimit:
+					if habOuter > wallLimit:
+						habOuter = wallLimit
+					habCenter = (habOuter+habInner)/2.0
+				else:
+					habCenter = (habOuter+habInner)/2.0
+					bs_habi.setVisible(False)
 
-					bs_habi.setScale(4, 25000, (1.0 * (habOuter - habInner)) * c_scaleWall_dist * g_scale_dist)
-					bs_habi.setPosition(Vector3(0.0, 0.0, 48000 - habCenter * c_scaleWall_dist * g_scale_dist))
-					bs_habi.setEffect('colored -e #00611055')
-					bs_habi.getMaterial().setTransparent(True)
+				bs_habi.setScale(4, 25000, (1.0 * (habOuter - habInner)) * c_scaleWall_dist * g_scale_dist)
+				bs_habi.setPosition(Vector3(0.0, 0.0, 48000 - habCenter * c_scaleWall_dist * g_scale_dist))
+				bs_habi.setEffect('colored -e #00611055')
+				bs_habi.getMaterial().setTransparent(True)
 
-					sn_smallSys.addChild(sn_habiParent)
-					sn_habiParent.addChild(bs_habi)
-						#sn_smallSys.addChild(bs_habi) # child 1
+				sn_smallSys.addChild(sn_habiParent)
+				sn_habiParent.addChild(bs_habi)
+					#sn_smallSys.addChild(bs_habi) # child 1
 
-					sn_smallTrans.addChild(sn_smallSys)
+				sn_smallTrans.addChild(sn_smallSys)
 
-					## get planets
-					sn_planetParent = SceneNode.create('planetParent'+str(g_curOrder[smallCount]))
+				## get planets
+				sn_planetParent = SceneNode.create('planetParent'+str(g_curOrder[smallCount]))
 
-					outCounter = 0
-					for p in curSys._star._children:
-						model = StaticObject.create('defaultSphere')
-						#model = SphereShape.create(p._size * c_scaleWall_size * g_scale_size, 4)
-						model.setScale(Vector3(p._size * c_scaleWall_size * g_scale_size, p._size * c_scaleWall_size * g_scale_size, p._size * c_scaleWall_size * g_scale_size))
-						model.setPosition(Vector3(0.0,0.0,48000 - p._orbit * c_scaleWall_dist * g_scale_dist))
-						g_changeSize.append(model)
-						model.setEffect('textured -v emissive -d '+p._texture)
-							#sn_smallSys.addChild(model)
-						sn_planetParent.addChild(model)
-						t = Text3D.create('fonts/helvetica.ttf', 1, p._name)
-						#print '!!name:',p._name
-						if CAVE():
-							#t.setFontResolution(120)
-							#t.setFontSize(120)
-							t.setFontSize(64)
-						else:
-							t.setFontSize(g_ftszdesk)
-						t.setPosition(Vector3(0.0, p._size * c_scaleWall_size * g_scale_size, 48000 - p._orbit * c_scaleWall_dist * g_scale_dist))
-						g_changeSizeWallText.append(t)
-						t.yaw(0.5*math.pi) # back to face, face to back
-						#t.setFontResolution(120)
-						#t.getMaterial().setDoubleFace(1)
-						t.getMaterial().setTransparent(False)
-						t.getMaterial().setDepthTestEnabled(False)
-						t.setFixedSize(True)
-						t.setColor(Color('white'))
-
-						highlight(curSys,curSys._star,p,t,76)
-
-						sn_planetParent.addChild(t)
-						if p._orbit > wallLimit:
-							outCounter+=1
-							model.setVisible(False)
-							t.setVisible(False)
-
-					sn_smallSys.addChild(sn_planetParent)
-
-					## get text
-					if cmp(curSys._name,'Gliese 667')==0:
-						t = Text3D.create('fonts/helvetica.ttf', 1, curSys._name+curSys._binary+' | STAR: '+curSys._star._name+' | TYPE: '+curSys._star._type+' | DISTANCE: '+str(curSys._star._dis)+' ly | by: '+curSys._star._children[0]._detection+ '| (RECENT DISCOVERY 1)')
-					elif cmp(curSys._name,'Kepler-78')==0:
-						t = Text3D.create('fonts/helvetica.ttf', 1, curSys._name+curSys._binary+' | STAR: '+curSys._star._name+' | TYPE: '+curSys._star._type+' | DISTANCE: '+str(curSys._star._dis)+' ly | by: '+curSys._star._children[0]._detection+ '| (RECENT DISCOVERY 2)')
-					elif cmp(curSys._name,'HD 10180')==0:
-						t = Text3D.create('fonts/helvetica.ttf', 1, curSys._name+curSys._binary+' | STAR: '+curSys._star._name+' | TYPE: '+curSys._star._type+' | DISTANCE: '+str(curSys._star._dis)+' ly | by: '+curSys._star._children[0]._detection+ '| (RECENT DISCOVERY 3)')
-					elif cmp(curSys._name,'Kepler-69')==0:
-						t = Text3D.create('fonts/helvetica.ttf', 1, curSys._name+curSys._binary+' | STAR: '+curSys._star._name+' | TYPE: '+curSys._star._type+' | DISTANCE: '+str(curSys._star._dis)+' ly | by: '+curSys._star._children[0]._detection+ '| (RECENT DISCOVERY 4)')
-					else:
-						t = Text3D.create('fonts/helvetica.ttf', 1, curSys._name+curSys._binary+' | STAR: '+curSys._star._name+' | TYPE: '+curSys._star._type+' | DISTANCE: '+str(curSys._star._dis)+' ly | by: '+curSys._star._children[0]._detection)
+				outCounter = 0
+				for p in curSys._star._children:
+					model = StaticObject.create('defaultSphere')
+					model.setScale(Vector3(p._size * c_scaleWall_size * g_scale_size, p._size * c_scaleWall_size * g_scale_size, p._size * c_scaleWall_size * g_scale_size))
+					model.setPosition(Vector3(0.0,0.0,48000 - p._orbit * c_scaleWall_dist * g_scale_dist))
+					g_changeSize.append(model)
+					model.setEffect('textured -v emissive -d '+p._texture)
+					sn_planetParent.addChild(model)
+					t = Text3D.create('fonts/helvetica.ttf', 1, p._name)
+					#print '!!name:',p._name
 					if CAVE():
-						#t.setFontResolution(120)
-						#t.setFontSize(120)
-						t.setFontSize(g_ftszcave)
+						t.setFontSize(64)
 					else:
-						#t.setFontResolution(10)
 						t.setFontSize(g_ftszdesk)
-					if CAVE():
-						t.setPosition(Vector3(0.45, c_smallLabel_y_cave, -0.01))
-					else:
-						t.setPosition(Vector3(0.3, 0.08, -0.01))
-					t.yaw(math.pi) # back to face, face to back
-					#t.setFontResolution(120)
-					#t.getMaterial().setDoubleFace(1)
+					t.setPosition(Vector3(0.0, p._size * c_scaleWall_size * g_scale_size, 48000 - p._orbit * c_scaleWall_dist * g_scale_dist))
+					g_changeSizeWallText.append(t)
+					t.yaw(0.5*math.pi) # back to face, face to back
 					t.getMaterial().setTransparent(False)
 					t.getMaterial().setDepthTestEnabled(False)
-					#t.setFixedSize(True)
-					if cmp(curSys._name,'Gliese 667')==0 or cmp(curSys._name,'Kepler-78')==0 or cmp(curSys._name,'HD 10180')==0 or cmp(curSys._name,'Kepler-69')==0:
-						t.setColor(Color('red'))
-						t.setFontSize(g_ftszcave*1.2)
-					elif cmp(curSys._binary,'')!=0:
-						t.setColor(Color('orange'))
-					else:
-						t.setColor(Color('white'))
-					sn_smallTrans.addChild(t)
+					t.setFixedSize(True)
+					t.setColor(Color('white'))
 
-					## get indicator if some planets are outside
-					sn_indicatorParent = SceneNode.create('indicatorParent'+str(g_curOrder[smallCount]))
+					highlight(curSys,curSys._star,p,t,76)
 
-					if cmp(curSys._binary,'')==0:
-						t_indi = Text3D.create('fonts/helvetica.ttf', 1, str(outCounter)+' more planet(s) -->>')
-					else:
-						t_indi = Text3D.create('fonts/helvetica.ttf', 1, str(outCounter)+' more bodies -->>')
-					if CAVE():
-						#t.setFontResolution(120)
-						#t.setFontSize(120)
-						t_indi.setFontSize(g_ftszcave)
-					else:
-						#t.setFontResolution(10)
-						t_indi.setFontSize(g_ftszdesk)
-					if CAVE():
-						t_indi.setPosition(Vector3(-1.15, -c_smallLabel_y_cave, -0.01))
-					else:
-						t_indi.setPosition(Vector3(-0.9, 0.08, -0.01))
-					t_indi.yaw(math.pi) # back to face, face to back
-					#t.setFontResolution(120)
-					#t.getMaterial().setDoubleFace(1)
-					t_indi.getMaterial().setTransparent(False)
-					t_indi.getMaterial().setDepthTestEnabled(False)
-					#t.setFixedSize(True)
-					t_indi.setColor(Color('white'))
-					sn_smallTrans.addChild(sn_indicatorParent)
-					sn_indicatorParent.addChild(t_indi)
+					sn_planetParent.addChild(t)
+					if p._orbit > wallLimit:
+						outCounter+=1
+						model.setVisible(False)
+						t.setVisible(False)
 
-					if outCounter==0:
-						t_indi.setVisible(False)
+				sn_smallSys.addChild(sn_planetParent)
 
-					sn_smallSys.yaw(math.pi/2.0)
-					sn_smallSys.setScale(0.00001, 0.00001, 0.00001) #scale for panels - flat to screen
+				## get text
+				if cmp(curSys._name,'Gliese 667')==0:
+					t = Text3D.create('fonts/helvetica.ttf', 1, curSys._name+curSys._binary+' | STAR: '+curSys._star._name+' | TYPE: '+curSys._star._type+' | DISTANCE: '+str(curSys._star._dis)+' ly | by: '+curSys._star._children[0]._detection+ '| (RECENT DISCOVERY 1)')
+				elif cmp(curSys._name,'Kepler-78')==0:
+					t = Text3D.create('fonts/helvetica.ttf', 1, curSys._name+curSys._binary+' | STAR: '+curSys._star._name+' | TYPE: '+curSys._star._type+' | DISTANCE: '+str(curSys._star._dis)+' ly | by: '+curSys._star._children[0]._detection+ '| (RECENT DISCOVERY 2)')
+				elif cmp(curSys._name,'HD 10180')==0:
+					t = Text3D.create('fonts/helvetica.ttf', 1, curSys._name+curSys._binary+' | STAR: '+curSys._star._name+' | TYPE: '+curSys._star._type+' | DISTANCE: '+str(curSys._star._dis)+' ly | by: '+curSys._star._children[0]._detection+ '| (RECENT DISCOVERY 3)')
+				elif cmp(curSys._name,'Kepler-69')==0:
+					t = Text3D.create('fonts/helvetica.ttf', 1, curSys._name+curSys._binary+' | STAR: '+curSys._star._name+' | TYPE: '+curSys._star._type+' | DISTANCE: '+str(curSys._star._dis)+' ly | by: '+curSys._star._children[0]._detection+ '| (RECENT DISCOVERY 4)')
+				else:
+					t = Text3D.create('fonts/helvetica.ttf', 1, curSys._name+curSys._binary+' | STAR: '+curSys._star._name+' | TYPE: '+curSys._star._type+' | DISTANCE: '+str(curSys._star._dis)+' ly | by: '+curSys._star._children[0]._detection)
+				if CAVE():
+					t.setFontSize(g_ftszcave)
+				else:
+					t.setFontSize(g_ftszdesk)
+				if CAVE():
+					t.setPosition(Vector3(0.45, c_smallLabel_y_cave, -0.01))
+				else:
+					t.setPosition(Vector3(0.3, 0.08, -0.01))
+				t.yaw(math.pi) # back to face, face to back
+				t.getMaterial().setTransparent(False)
+				t.getMaterial().setDepthTestEnabled(False)
+				if cmp(curSys._name,'Gliese 667')==0 or cmp(curSys._name,'Kepler-78')==0 or cmp(curSys._name,'HD 10180')==0 or cmp(curSys._name,'Kepler-69')==0:
+					t.setColor(Color('red'))
+					t.setFontSize(g_ftszcave*1.2)
+				elif cmp(curSys._binary,'')!=0:
+					t.setColor(Color('orange'))
+				else:
+					t.setColor(Color('white'))
+				sn_smallTrans.addChild(t)
 
-				smallCount += 1
-		else:
-			for row in xrange(4, 8):
+				## get indicator if some planets are outside
+				sn_indicatorParent = SceneNode.create('indicatorParent'+str(g_curOrder[smallCount]))
 
-				sn_smallTrans = SceneNode.create('smallTrans'+str(g_curOrder[smallCount]))
+				if cmp(curSys._binary,'')==0:
+					t_indi = Text3D.create('fonts/helvetica.ttf', 1, str(outCounter)+' more planet(s) -->>')
+				else:
+					t_indi = Text3D.create('fonts/helvetica.ttf', 1, str(outCounter)+' more bodies -->>')
+				if CAVE():
+					t_indi.setFontSize(g_ftszcave)
+				else:
+					t_indi.setFontSize(g_ftszdesk)
+				if CAVE():
+					t_indi.setPosition(Vector3(-1.15, -c_smallLabel_y_cave, -0.01))
+				else:
+					t_indi.setPosition(Vector3(-0.9, 0.08, -0.01))
+				t_indi.yaw(math.pi) # back to face, face to back
+				t_indi.getMaterial().setTransparent(False)
+				t_indi.getMaterial().setDepthTestEnabled(False)
+				t_indi.setColor(Color('white'))
+				sn_smallTrans.addChild(sn_indicatorParent)
+				sn_indicatorParent.addChild(t_indi)
 
-				hLoc = (8-col) + 1.5
-				degreeConvert = 0.2*math.pi # 36 degrees per column
-				sn_smallTrans.setPosition(Vector3(math.sin(hLoc*degreeConvert)*caveRadius, (7-row) * 0.29 + 0.41, math.cos(hLoc*degreeConvert)*caveRadius))
-				sn_smallTrans.yaw(hLoc*degreeConvert)
-				sn_smallMulti.addChild(sn_smallTrans)
+				if outCounter==0:
+					t_indi.setVisible(False)
 
-				sn_boxParent = SceneNode.create('boxParent'+str(g_curOrder[smallCount]))
-				sn_smallTrans.addChild(sn_boxParent)
+				sn_smallSys.yaw(math.pi/2.0)
+				sn_smallSys.setScale(0.00001, 0.00001, 0.00001) #scale for panels - flat to screen
 
-				bs_outlineBox = BoxShape.create(2.0, 0.25, 0.001)
-				bs_outlineBox.setPosition(Vector3(-0.5, 0, 0.01))
-				bs_outlineBox.setEffect('colored -e #01b2f144')
-				bs_outlineBox.getMaterial().setTransparent(True)
-				sn_boxParent.addChild(bs_outlineBox)
-
-				li_boxOnWall.append(bs_outlineBox)
-				set_save[g_curOrder[smallCount]] = preset[g_curOrder[smallCount]]
-
-				dic_boxToSys[bs_outlineBox] = None
-				dic_countToSys[g_curOrder[smallCount]] = None
-
-				if preset[g_curOrder[smallCount]]!=-1:
-					curSys = li_allSys[preset[g_curOrder[smallCount]]]
-
-					dic_boxToSys[bs_outlineBox] = curSys
-					dic_countToSys[g_curOrder[smallCount]] = curSys
-
-					sn_smallSys = SceneNode.create('smallSys'+str(g_curOrder[smallCount]))
-
-					## get star
-					bs_model = BoxShape.create(100, 25000, 2000)
-					bs_model.setPosition(Vector3(0.0, 0.0, 48000))# - thisSystem[name][1] * XorbitScaleFactor * user2ScaleFactor))
-					bs_model.setEffect('textured -v emissive -d '+curSys._star._texture)
-					sn_smallSys.addChild(bs_model)
-
-					## get habitable zone if it is in the range
-					habOuter = curSys._star._habFar
-					habInner = curSys._star._habNear
-
-					sn_habiParent = SceneNode.create('habiParent'+str(g_curOrder[smallCount]))
-
-					bs_habi = BoxShape.create(1, 1, 1)
-
-					if habInner < wallLimit:
-						if habOuter > wallLimit:
-							habOuter = wallLimit
-						habCenter = (habOuter+habInner)/2.0
-					else:
-						habCenter = (habOuter+habInner)/2.0
-						bs_habi.setVisible(False)
-
-					bs_habi.setScale(4, 25000, (1.0 * (habOuter - habInner)) * c_scaleWall_dist * g_scale_dist)
-					bs_habi.setPosition(Vector3(0.0, 0.0, 48000 - habCenter * c_scaleWall_dist * g_scale_dist))
-					bs_habi.setEffect('colored -e #00611055')
-					bs_habi.getMaterial().setTransparent(True)
-
-					sn_smallSys.addChild(sn_habiParent)
-					sn_habiParent.addChild(bs_habi)
-						#sn_smallSys.addChild(bs_habi) # child 1
-
-					sn_smallTrans.addChild(sn_smallSys)
-
-					## get planets
-					sn_planetParent = SceneNode.create('planetParent'+str(g_curOrder[smallCount]))
-
-					outCounter = 0
-					for p in curSys._star._children:
-						model = StaticObject.create('defaultSphere')
-						#model = SphereShape.create(p._size * c_scaleWall_size * g_scale_size, 4)
-						model.setScale(Vector3(p._size * c_scaleWall_size * g_scale_size, p._size * c_scaleWall_size * g_scale_size, p._size * c_scaleWall_size * g_scale_size))
-						model.setPosition(Vector3(0.0,0.0,48000 - p._orbit * c_scaleWall_dist * g_scale_dist))
-						g_changeSize.append(model)
-						model.setEffect('textured -v emissive -d '+p._texture)
-							#sn_smallSys.addChild(model)
-						sn_planetParent.addChild(model)
-						t = Text3D.create('fonts/helvetica.ttf', 1, p._name)
-						#print '!!name:',p._name
-						if CAVE():
-							#t.setFontResolution(120)
-							#t.setFontSize(120)
-							t.setFontSize(64)
-						else:
-							t.setFontSize(g_ftszdesk)
-						t.setPosition(Vector3(0.0, p._size * c_scaleWall_size * g_scale_size, 48000 - p._orbit * c_scaleWall_dist * g_scale_dist))
-						g_changeSizeWallText.append(t)
-						t.yaw(0.5*math.pi) # back to face, face to back
-						#t.setFontResolution(120)
-						#t.getMaterial().setDoubleFace(1)
-						t.getMaterial().setTransparent(False)
-						t.getMaterial().setDepthTestEnabled(False)
-						t.setFixedSize(True)
-						t.setColor(Color('white'))
-
-						highlight(curSys,curSys._star,p,t,76)
-
-						sn_planetParent.addChild(t)
-						if p._orbit > wallLimit:
-							outCounter+=1
-							model.setVisible(False)
-							t.setVisible(False)
-
-					sn_smallSys.addChild(sn_planetParent)
-
-					## get text
-					if cmp(curSys._name,'Gliese 667')==0:
-						t = Text3D.create('fonts/helvetica.ttf', 1, curSys._name+curSys._binary+' | STAR: '+curSys._star._name+' | TYPE: '+curSys._star._type+' | DISTANCE: '+str(curSys._star._dis)+' ly | by: '+curSys._star._children[0]._detection+ '| (RECENT DISCOVERY 1)')
-					elif cmp(curSys._name,'Kepler-78')==0:
-						t = Text3D.create('fonts/helvetica.ttf', 1, curSys._name+curSys._binary+' | STAR: '+curSys._star._name+' | TYPE: '+curSys._star._type+' | DISTANCE: '+str(curSys._star._dis)+' ly | by: '+curSys._star._children[0]._detection+ '| (RECENT DISCOVERY 2)')
-					elif cmp(curSys._name,'HD 10180')==0:
-						t = Text3D.create('fonts/helvetica.ttf', 1, curSys._name+curSys._binary+' | STAR: '+curSys._star._name+' | TYPE: '+curSys._star._type+' | DISTANCE: '+str(curSys._star._dis)+' ly | by: '+curSys._star._children[0]._detection+ '| (RECENT DISCOVERY 3)')
-					elif cmp(curSys._name,'Kepler-69')==0:
-						t = Text3D.create('fonts/helvetica.ttf', 1, curSys._name+curSys._binary+' | STAR: '+curSys._star._name+' | TYPE: '+curSys._star._type+' | DISTANCE: '+str(curSys._star._dis)+' ly | by: '+curSys._star._children[0]._detection+ '| (RECENT DISCOVERY 4)')
-					else:
-						t = Text3D.create('fonts/helvetica.ttf', 1, curSys._name+curSys._binary+' | STAR: '+curSys._star._name+' | TYPE: '+curSys._star._type+' | DISTANCE: '+str(curSys._star._dis)+' ly | by: '+curSys._star._children[0]._detection)
-					if CAVE():
-						#t.setFontResolution(120)
-						#t.setFontSize(120)
-						t.setFontSize(g_ftszcave)
-					else:
-						#t.setFontResolution(10)
-						t.setFontSize(g_ftszdesk)
-					if CAVE():
-						t.setPosition(Vector3(0.45, c_smallLabel_y_cave, -0.01))
-					else:
-						t.setPosition(Vector3(0.3, 0.08, -0.01))
-					t.yaw(math.pi) # back to face, face to back
-					#t.setFontResolution(120)
-					#t.getMaterial().setDoubleFace(1)
-					t.getMaterial().setTransparent(False)
-					t.getMaterial().setDepthTestEnabled(False)
-					#t.setFixedSize(True)
-					if cmp(curSys._name,'Gliese 667')==0 or cmp(curSys._name,'Kepler-78')==0 or cmp(curSys._name,'HD 10180')==0 or cmp(curSys._name,'Kepler-69')==0:
-						t.setColor(Color('red'))
-						t.setFontSize(g_ftszcave*1.2)
-					elif cmp(curSys._binary,'')!=0:
-						t.setColor(Color('orange'))
-					else:
-						t.setColor(Color('white'))
-					sn_smallTrans.addChild(t)
-
-					## get indicator if some planets are outside
-					sn_indicatorParent = SceneNode.create('indicatorParent'+str(g_curOrder[smallCount]))
-
-					if cmp(curSys._binary,'')==0:
-						t_indi = Text3D.create('fonts/helvetica.ttf', 1, str(outCounter)+' more planet(s) -->>')
-					else:
-						t_indi = Text3D.create('fonts/helvetica.ttf', 1, str(outCounter)+' more bodies -->>')
-					if CAVE():
-						#t.setFontResolution(120)
-						#t.setFontSize(120)
-						t_indi.setFontSize(g_ftszcave)
-					else:
-						#t.setFontResolution(10)
-						t_indi.setFontSize(g_ftszdesk)
-					if CAVE():
-						t_indi.setPosition(Vector3(-1.15, -c_smallLabel_y_cave, -0.01))
-					else:
-						t_indi.setPosition(Vector3(-0.9, 0.08, -0.01))
-					t_indi.yaw(math.pi) # back to face, face to back
-					#t.setFontResolution(120)
-					#t.getMaterial().setDoubleFace(1)
-					t_indi.getMaterial().setTransparent(False)
-					t_indi.getMaterial().setDepthTestEnabled(False)
-					#t.setFixedSize(True)
-					t_indi.setColor(Color('white'))
-					sn_smallTrans.addChild(sn_indicatorParent)
-					sn_indicatorParent.addChild(t_indi)
-
-					if outCounter==0:
-						t_indi.setVisible(False)
-
-					sn_smallSys.yaw(math.pi/2.0)
-					sn_smallSys.setScale(0.00001, 0.00001, 0.00001) #scale for panels - flat to screen
-
-				smallCount += 1
+			smallCount += 1
 
 	initUniv(preset)
 
@@ -2483,9 +2284,9 @@ def updateFilter():
 		#print 'added'
 
 	#print 'done testing'
-	if len(res)<48:
+	if len(res)<c_SMALLMULTI_NUMBER:
 		#print 'added less then 48 systems, filling up using None'
-		for i in xrange(len(res),48):
+		for i in xrange(len(res),c_SMALLMULTI_NUMBER):
 			res.append(-1)
 		#print 'done filling up'
 	#print 'start resetting the wall'
@@ -2561,4 +2362,38 @@ def showNews(s):
 
 		legend_s.setVisible(True)
 		legend_s.setPosition(Vector2(15100,0))
+
+##############################################################################################################
+# FINAL STUFF
+graph1 = Container.create(ContainerLayout.LayoutFree, ui.getUi())
+graph1.setStyleValue('fill', '#11296b80')
+graph1.setStyleValue('border', '4 #14b822ff')
+graph1.setAutosize(False)
+if CAVE():
+	graph1.setSize(Vector2(2732-4, 1536-4))
+	graph1.setPadding(10)
+	graph1.setPosition(Vector2(21856+2,0+2))
+else:
+	graph1.setSize(Vector2(2728*0.2, 1532*0.2))
+	graph1.setPadding(2)
+	graph1.setPosition(Vector2(20, 20))
+graph1.setBlendMode(WidgetBlendMode.BlendNormal)
+graph1.setAlpha(1.0)
+
+graph2 = Container.create(ContainerLayout.LayoutFree, ui.getUi())
+graph2.setStyleValue('fill', '#11296b80')
+graph2.setStyleValue('border', '4 #14b822ff')
+graph2.setAutosize(False)
+if CAVE():
+	graph2.setSize(Vector2(2732-4, 1536-4))
+	graph2.setPadding(10)
+	graph2.setPosition(Vector2(21856+2,768*2+2))
+else:
+	graph2.setSize(Vector2(2728*0.2, 1532*0.2))
+	graph2.setPadding(2)
+	graph2.setPosition(Vector2(20, 20))
+graph2.setBlendMode(WidgetBlendMode.BlendNormal)
+graph2.setAlpha(1.0)
+
+
 
