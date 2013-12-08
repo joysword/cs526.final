@@ -385,40 +385,40 @@ btn_x_2 = Button.create(container_x)
 btn_x_3 = Button.create(container_x)
 btn_x_4 = Button.create(container_x)
 btn_x_5 = Button.create(container_x)
-btn_x_6 = Button.create(container_x)
-btn_x_7 = Button.create(container_x)
-btn_x_8 = Button.create(container_x)
-btn_x_9 = Button.create(container_x)
+# btn_x_6 = Button.create(container_x)
+# btn_x_7 = Button.create(container_x)
+# btn_x_8 = Button.create(container_x)
+# btn_x_9 = Button.create(container_x)
 
 btn_x_1.setText('Planet Mass')
 btn_x_2.setText('Planet Radius')
 btn_x_3.setText('Orbital Radius')
 btn_x_4.setText('Orbital Period')
 btn_x_5.setText('Distance to us')
-btn_x_6.setText('foo bar')
-btn_x_7.setText('foo bar')
-btn_x_8.setText('foo bar')
-btn_x_9.setText('foo bar')
+# btn_x_6.setText('foo bar')
+# btn_x_7.setText('foo bar')
+# btn_x_8.setText('foo bar')
+# btn_x_9.setText('foo bar')
 
 btn_x_1.setCheckable(True)
 btn_x_2.setCheckable(True)
 btn_x_3.setCheckable(True)
 btn_x_4.setCheckable(True)
 btn_x_5.setCheckable(True)
-btn_x_6.setCheckable(True)
-btn_x_7.setCheckable(True)
-btn_x_8.setCheckable(True)
-btn_x_9.setCheckable(True)
+# btn_x_6.setCheckable(True)
+# btn_x_7.setCheckable(True)
+# btn_x_8.setCheckable(True)
+# btn_x_9.setCheckable(True)
 
 btn_x_1.setRadio(True)
 btn_x_2.setRadio(True)
 btn_x_3.setRadio(True)
 btn_x_4.setRadio(True)
 btn_x_5.setRadio(True)
-btn_x_6.setRadio(True)
-btn_x_7.setRadio(True)
-btn_x_8.setRadio(True)
-btn_x_9.setRadio(True)
+# btn_x_6.setRadio(True)
+# btn_x_7.setRadio(True)
+# btn_x_8.setRadio(True)
+# btn_x_9.setRadio(True)
 
 btn_x_1.setChecked(True)
 
@@ -429,40 +429,40 @@ btn_y_2 = Button.create(container_y)
 btn_y_3 = Button.create(container_y)
 btn_y_4 = Button.create(container_y)
 btn_y_5 = Button.create(container_y)
-btn_y_6 = Button.create(container_y)
-btn_y_7 = Button.create(container_y)
-btn_y_8 = Button.create(container_y)
-btn_y_9 = Button.create(container_y)
+# btn_y_6 = Button.create(container_y)
+# btn_y_7 = Button.create(container_y)
+# btn_y_8 = Button.create(container_y)
+# btn_y_9 = Button.create(container_y)
 
 btn_y_1.setText('Planet Mass')
 btn_y_2.setText('Planet Radius')
 btn_y_3.setText('Orbital Radius')
 btn_y_4.setText('Orbital Period')
 btn_y_5.setText('Distance to us')
-btn_y_6.setText('foo bar')
-btn_y_7.setText('foo bar')
-btn_y_8.setText('foo bar')
-btn_y_9.setText('foo bar')
+# btn_y_6.setText('foo bar')
+# btn_y_7.setText('foo bar')
+# btn_y_8.setText('foo bar')
+# btn_y_9.setText('foo bar')
 
 btn_y_1.setCheckable(True)
 btn_y_2.setCheckable(True)
 btn_y_3.setCheckable(True)
 btn_y_4.setCheckable(True)
 btn_y_5.setCheckable(True)
-btn_y_6.setCheckable(True)
-btn_y_7.setCheckable(True)
-btn_y_8.setCheckable(True)
-btn_y_9.setCheckable(True)
+# btn_y_6.setCheckable(True)
+# btn_y_7.setCheckable(True)
+# btn_y_8.setCheckable(True)
+# btn_y_9.setCheckable(True)
 
 btn_y_1.setRadio(True)
 btn_y_2.setRadio(True)
 btn_y_3.setRadio(True)
 btn_y_4.setRadio(True)
 btn_y_5.setRadio(True)
-btn_y_6.setRadio(True)
-btn_y_7.setRadio(True)
-btn_y_8.setRadio(True)
-btn_y_9.setRadio(True)
+# btn_y_6.setRadio(True)
+# btn_y_7.setRadio(True)
+# btn_y_8.setRadio(True)
+# btn_y_9.setRadio(True)
 
 btn_y_1.setChecked(True)
 
@@ -471,22 +471,22 @@ container_p = menu_p.getContainer()
 btn_p_1 = Button.create(container_p)
 btn_p_2 = Button.create(container_p)
 btn_p_3 = Button.create(container_p)
-btn_p_4 = Button.create(container_p)
+# btn_p_4 = Button.create(container_p)
 
 btn_p_1.setText('detection method')
 btn_p_2.setText('radius')
 btn_p_3.setText('mass')
-btn_p_4.setText('foo bar')
+# btn_p_4.setText('foo bar')
 
 btn_p_1.setCheckable(True)
 btn_p_2.setCheckable(True)
 btn_p_3.setCheckable(True)
-btn_p_4.setCheckable(True)
+# btn_p_4.setCheckable(True)
 
 btn_p_1.setRadio(True)
 btn_p_2.setRadio(True)
 btn_p_3.setRadio(True)
-btn_p_4.setRadio(True)
+# btn_p_4.setRadio(True)
 
 btn_p_1.setChecked(True)
 
@@ -2298,8 +2298,6 @@ def highlight_box_blue(box, highlight):
 			box.setEffect('colored -e #01b2f144')
 			box.getMaterial().setTransparent(True)
 
-imgData = loadImage('laser_dot.png')
-
 # test if need highlight
 def needHighlight(sys,star,p):
 	if p._isEarthSized and p._orbit>star._habNear and p._orbit<star._habFar:
@@ -2323,14 +2321,82 @@ def needHighlight(sys,star,p):
 
 	return False
 
+img_radial = loadImage('textures/detec/rad.png')
+img_transit = loadImage('textures/detec/transit.jpg')
+img_imaging = loadImage('textures/detec/imag.png')
+img_other = loadImage('textures/detec/other.png')
+img_unknown = loadImage('textures/detec/unknown.png')
+
+img_star = loadImage('texstures/dot/star.png')
+img_select = loadImage('texstures/dot/select.png')
+
 def updateGraph():
 	global li_dotOnWall
 
+	if graph1.getNumChildren()>0:
+		for i in xrange(graph1.getNumChildren()):
+			graph1.removeChild(graph1.getChildByIndex(0))
+
+	# TO DO graph2
+
+	max_mass = 0
 	max_size = 0
+	max_orbit = 0
+	max_year = 0
+	max_dis = 0
+
 	for i in xrange(len(li_dotOnWall)):
-		dot = li_dotOnWall[i]
-		if dot.getPla()._size>max_size:
-			max_size = dot.getPla()._size
+		p = li_dotOnWall[i].getPla()
+		star = li_dotOnWall[i].getSys()._star
+		if p._mass>max_mass:
+			max_mass = p._mass
+		if p._size>max_size:
+			max_size = p._size
+		if p._orbit>max_orbit:
+			max_orbit = p._orbit
+		if p._year>max_year:
+			max_year = p._year
+		if star._dis>max_dis:
+			max_dis = star._dis
+	
+	for i in xrange(len(li_dotOnWall)):
+		p = li_dotOnWall[i].getPla()
+		star = li_dotOnWall[i].getSys()._star
+
+		img = Image.create(graph1)
+
+		if btn_p_1.isChecked():
+			if cmp(p._detection,'unknown')==0:
+				img.setData(img_unknown)
+			elif cmp(p._detection,'Radial Velocity')==0:
+				img.setData(img_rad)
+			elif cmp(p._detection,'Transit')==0:
+				img.setData(img_transit)
+			elif cmp(p._detection,'Imaging')==0:
+				img.setData(img_imaging)
+			elif cmp(p._detection,'Pulsar Timing')==0:
+				img.setData(img_other)
+			elif cmp(p._detection,'Eclipse Timing Variations')==0:
+				img.setData(img_other)
+			elif cmp(p._detection,'Microlensing')==0:	
+				img.setData(img_other)
+			img.setSize(Vector2(48,48))
+		elif btn_p_2.isChecked():
+			img.setData(img_star)
+			img.setSize(Vector2(p._size*100.0/max_size,p._size*100.0/max_size))
+		elif btn_p_3.isChecked():
+			img.setData(img_star)
+			img.setSize(Vector2(p._mass*100.0/max_mass,p._mass*100.0/max_mass))
+		else:
+			img.setData(img_star)
+			img.setSize(Vector2(50,50))
+
+		if btn_p_2.isChecked():
+
+
+	if btn_x_1.isChecked():
+
+
 	for i in xrange(len(li_dotOnWall)):
 		dot = li_dotOnWall[i]
 		img = Image.create(graph1)
@@ -2341,6 +2407,17 @@ def updateGraph():
 			img.setCenter(Vector2(i*10,dot.getPla()._size/max_size*1360*2))
 		else:
 			img.setCenter(Vector2(i*30,dot.getPla()._size/max_size*1360*2*0.2))
+
+	# detection method
+	if btn_p_1.isChecked():
+		#img.setCenter(Vector2(i*10,))
+		pass
+	# radius
+	elif btn_p_2.isChecked():
+		pass
+	# mass
+	elif btn_p_3.isChecked():
+		pass
 
 updateGraph()
 
@@ -2370,7 +2447,7 @@ def showInfoForDot(dot):
 # EVENT FUNCTION
 
 laser = Image.create(ui.getUi())
-laser.setData(loadImage('laser_dot.png'))
+laser.setData(loadImage('pointer.png'))
 laser.setCenter(Vector2(100,100))
 laser.setVisible(True)
 
