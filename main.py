@@ -49,6 +49,12 @@ text_univ_highlight = None
 
 g_cur_highlight_box = None
 
+g_cur_highlight_box_blue = None
+
+g_cur_highlight_i = -100
+
+g_cur_highlight_i_blue = -100
+
 # whether we are showing the info of a system
 g_showInfo = False
 
@@ -1672,6 +1678,10 @@ def onEvent():
 	global g_showNews
 
 	global g_cur_highlight_box
+	global g_cur_highlight_box_blue
+
+	global g_cur_highlight_i
+	global g_cur_highlight_i_blue
 
 	e = getEvent()
 
@@ -1760,18 +1770,32 @@ def onEvent():
 			pointer.setVisible(False)
 			playSound(sd_mtc_quit, cam.getPosition(), 0.5)
 			print ('quit move to center mode')
+			# quit highlight
+			final_highlight_box(g_cur_highlight_box,False)
+			g_cur_highlight_box = None
 		else:
 			r = getRayFromEvent(e)
 			for i in xrange(c_SMALLMULTI_NUMBER):
 				node = li_boxOnWall[i]
 				hitData = hitNode(node, r[1], r[2])
 				if hitData[0]:
-					pointer.setPosition(hitData[1])
 					if node!=g_cur_highlight_box:
+						# print '\n'
+						# print 'node != g_cur_highlight_box: node:',node,'g_cur: ',g_cur_highlight_box
+						# print 'node name:',node.getParent().getName()
+						# if g_cur_highlight_box!=None:
+						# 	print 'g_cur name:',g_cur_highlight_box.getParent().getName()
 						final_highlight_box(node,True)
 						final_highlight_box(g_cur_highlight_box,False)
 						g_cur_highlight_box=node
 						print 'change'
+						# print 'node',node
+						# print 'g_cur_highlight_box',g_cur_highlight_box
+						# print 'node name:',node.getParent().getName()
+						# if g_cur_highlight_box!=None:
+						# 	print 'g_cur name:',g_cur_highlight_box.getParent().getName()
+						# print '\n'
+					pointer.setPosition(hitData[1])
 					if e.isButtonDown(EventFlags.Button2):
 						e.setProcessed()
 						if dic_boxToSys[node]!=None:
@@ -1784,6 +1808,9 @@ def onEvent():
 							pointer.setVisible(False)
 							g_moveToCenter=0
 							playSound(sd_mtc_moving, cam.getPosition(), 0.5)
+							# quit highlight
+							final_highlight_box(g_cur_highlight_box,False)
+							g_cur_highlight_box = None
 					break
 
 	## choose to reorder
@@ -1794,46 +1821,38 @@ def onEvent():
 			g_reorder=0
 			pointer.setVisible(False)
 			playSound(sd_reo_quit, cam.getPosition(), 0.5)
+			if g_cur_highlight_i != -100:
+				final_highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)
+				g_cur_highlight_i=-100
+			if g_cur_highlight_i_blue != -100:
+				final_highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByIndex(0),False)
+				g_cur_highlight_i_blue=-100
 			print 'quit reorder mode'
+			# quit highlight
 		else:
 			r = getRayFromEvent(e)
 			for i in xrange(sn_smallMulti.numChildren()):
 				sn_smallTrans = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[i]))
-				bs_outlineBox = sn_smallTrans.getChildByName('boxParent'+str(g_curOrder[i])).getChildByIndex(0)
-				hitData = hitNode(bs_outlineBox, r[1], r[2])
-				if hitData[0]:
+				node = sn_smallTrans.getChildByName('boxParent'+str(g_curOrder[i])).getChildByIndex(0)
+				hitData = hitNode(node, r[1], r[2])
+				if hitData[0]==True:
+					if i!=g_cur_highlight_i: #if g_cur_highlight_box==None or node.getParent()!=g_cur_highlight_box.getParent():
+						final_highlight_box(node,True)
+						if g_cur_highlight_i!=-100:
+							final_highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)#final_highlight_box(g_cur_highlight_box,False)
+						g_cur_highlight_i=i # g_cur_highlight_box = node
 					pointer.setPosition(hitData[1])
 					# select a box
 					if e.isButtonDown(EventFlags.Button2):
-						#print 'button 2 clicked'
 						e.setProcessed()
 						g_reorder=2
-						print 'selected smallTrans',g_curOrder[i]
-						print 'num_reorder:',i
-						#print 'g_reoder=2'
-						#bs_outlineBox.setEffect('colored -e #3274cc44') # change color to mark it
-						#print 'box color changed'
+						final_highlight_box_blue(node,True)
+						g_cur_highlight_i_blue = i
+						print 'box color changed to BLUE'
 						num_reorder = i # record this node's order
-						box_reorder = bs_outlineBox # record this node
-						#bs_outlineBox.setEffect('colored -e #01b2f144')
+						box_reorder = node # record this node
 						playSound(sd_reo_selected, cam.getPosition(), 0.5)
 					break
-
-		# for node in li_boxOnWall:
-		# 	hitData = hitNode(node, r[1], r[2])
-		# 	if hitData[0]:
-		# 		pointer.setPosition(hitData[1])
-		# 		if e.isButtonDown(EventFlags.Button3):
-		# 			e.setProcessed()
-		# 			g_reorder=0
-		# 			playSound(sd_reo_quit, cam.getPosition(), 0.5)
-		# 		elif e.isButtonDown(EventFlags.Button2):
-		# 			e.setProcessed()
-		# 			g_reorder=2
-		# 			node.setEffect('colored -e #3274cc44') # change color to mark it
-		# 			box_reorder = node # record this node as reordering
-		# 			playSound(sd_reo_selected, cam.getPosition(), 0.5)
-		# 		break
 
 	## move to reorder
 	elif g_reorder==2:
@@ -1841,27 +1860,31 @@ def onEvent():
 		if e.isButtonDown(EventFlags.Button3):
 			e.setProcessed()
 			g_reorder=1
-			#box_reorder.setEffect('colored -e #01b2f144') # restore original color
 			playSound(sd_reo_canceled, cam.getPosition(), 0.5)
- 			#playSound(sd_reo_please, cam.getPosition(), 0.5)
  			print ('cenceled')
+ 			# quit highlight blue
+ 			final_highlight_box_blue(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByIndex(0),False)
+			g_cur_highlight_i_blue = -100
+			print 'BLUE CANCELED'
  		else:
 			r = getRayFromEvent(e)
 			for i in xrange(sn_smallMulti.numChildren()):
 				sn_smallTrans = sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[i]))
-				bs_outlineBox = sn_smallTrans.getChildByName('boxParent'+str(g_curOrder[i])).getChildByIndex(0)
-				hitData = hitNode(bs_outlineBox, r[1], r[2])
+				node = sn_smallTrans.getChildByName('boxParent'+str(g_curOrder[i])).getChildByIndex(0)
+				hitData = hitNode(node, r[1], r[2])
 				if hitData[0]:
+					if i!=g_cur_highlight_i and i!=g_cur_highlight_i_blue:#if node!=g_cur_highlight_box and node!=g_cur_highlight_box_blue:
+						final_highlight_box(node,True)
+						if g_cur_highlight_i!=-100 and g_cur_highlight_i!=g_cur_highlight_i_blue:
+							final_highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)
+						g_cur_highlight_i=i
+						print 'RED CHANGED'
 					pointer.setPosition(hitData[1])
 			 		# select another box
 			 		if e.isButtonDown(EventFlags.Button2):
-			 			#for ii in xrange(sn_smallMulti.numChildren()):
-			 			#	print ii,sn_smallMulti.getChildByIndex(ii)
-			 			#print 'selected smallTrans',g_curOrder[i]
-						#print 'i:',i
 			 			e.setProcessed()
 			 			if i != num_reorder:
-			 				#bs_outlineBox.setEffect('colored -e #3274cc44') # change color to mark it
+			 				#node.setEffect('colored -e #3274cc44') # change color to mark it
 			 				curPos = sn_smallTrans.getPosition()
 			 				curOri = sn_smallTrans.getOrientation()
 			 				if i<num_reorder:
@@ -1903,6 +1926,13 @@ def onEvent():
 			 						print 'g_curOrder['+str(j)+']:',g_curOrder[j]
 			 				playSound(sd_reo_done, cam.getPosition(), 0.5)
 			 				g_reorder=1
+			 				# quit highlight
+			 				final_highlight_box_blue(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByIndex(0),False)
+			 				g_cur_highlight_i_blue = -100
+			 				print 'BLUE CANCELED'
+			 				final_highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)
+			 				g_cur_highlight_i = -100
+			 				print 'RED CANCELED'
 			 		break
 
 		# for node in li_boxOnWall:
@@ -2417,6 +2447,16 @@ def final_highlight_box(box, highlight):
 	if box!=None:
 		if highlight:
 			box.setEffect('colored -e #e2747144')
+			box.getMaterial().setTransparent(True)
+		else:
+			box.setEffect('colored -e #01b2f144')
+			box.getMaterial().setTransparent(True)
+
+## highlight a box to blue
+def final_highlight_box_blue(box, highlight):
+	if box!=None:
+		if highlight:
+			box.setEffect('colored -e #3274cc44')
 			box.getMaterial().setTransparent(True)
 		else:
 			box.setEffect('colored -e #01b2f144')
