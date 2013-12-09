@@ -379,11 +379,11 @@ def playSound(sd, pos, vol):
 
 mm = MenuManager.createAndInitialize()
 
-menu_graph = mm.getMainMenu().addSubMenu('change graph')
-menu_x = menu_graph.addSubMenu('x axis')
-menu_y = menu_graph.addSubMenu('y axis')
-menu_p = menu_graph.addSubMenu('points')
-btn_change_graph = menu_graph.addButton('update','updateGraph()')
+menu_graph1 = mm.getMainMenu().addSubMenu('change graph 1')
+menu_x = menu_graph1.addSubMenu('x axis')
+menu_y = menu_graph1.addSubMenu('y axis')
+menu_p = menu_graph1.addSubMenu('points')
+btn_change_graph = menu_graph1.addButton('update','updateGraph()')
 
 container_x = menu_x.getContainer()
 btn_x_1 = Button.create(container_x)
@@ -495,6 +495,91 @@ btn_p_3.setRadio(True)
 btn_p_4.setRadio(True)
 
 btn_p_4.setChecked(True)
+
+
+## MENU FOR GRAPH 2
+menu_graph2 = mm.getMainMenu().addSubMenu('change graph 2')
+menu_x2 = menu_graph2.addSubMenu('x axis')
+menu_y2 = menu_graph2.addSubMenu('y axis')
+menu_p2 = menu_graph2.addSubMenu('points')
+btn_change_graph = menu_graph2.addButton('update','updateGraph()')
+
+container_x2 = menu_x2.getContainer()
+btn_x_12 = Button.create(container_x2)
+btn_x_22 = Button.create(container_x2)
+btn_x_32 = Button.create(container_x2)
+btn_x_42 = Button.create(container_x2)
+btn_x_52 = Button.create(container_x2)
+
+btn_x_12.setText('Planet Mass')
+btn_x_22.setText('Planet Radius')
+btn_x_32.setText('Orbital Radius')
+btn_x_42.setText('Orbital Period')
+btn_x_52.setText('Distance to us')
+
+btn_x_12.setCheckable(True)
+btn_x_22.setCheckable(True)
+btn_x_32.setCheckable(True)
+btn_x_42.setCheckable(True)
+btn_x_52.setCheckable(True)
+
+btn_x_12.setRadio(True)
+btn_x_22.setRadio(True)
+btn_x_32.setRadio(True)
+btn_x_42.setRadio(True)
+btn_x_52.setRadio(True)
+
+btn_x_12.setChecked(True)
+
+container_y2 = menu_y2.getContainer()
+btn_y_12 = Button.create(container_y2)
+btn_y_22 = Button.create(container_y2)
+btn_y_32 = Button.create(container_y2)
+btn_y_42 = Button.create(container_y2)
+btn_y_52 = Button.create(container_y2)
+
+btn_y_12.setText('Planet Mass')
+btn_y_22.setText('Planet Radius')
+btn_y_32.setText('Orbital Radius')
+btn_y_42.setText('Orbital Period')
+btn_y_52.setText('Distance to us')
+
+btn_y_12.setCheckable(True)
+btn_y_22.setCheckable(True)
+btn_y_32.setCheckable(True)
+btn_y_42.setCheckable(True)
+btn_y_52.setCheckable(True)
+
+btn_y_12.setRadio(True)
+btn_y_22.setRadio(True)
+btn_y_32.setRadio(True)
+btn_y_42.setRadio(True)
+btn_y_52.setRadio(True)
+
+btn_y_12.setChecked(True)
+
+container_p2 = menu_p2.getContainer()
+btn_p_12 = Button.create(container_p2)
+btn_p_22 = Button.create(container_p2)
+btn_p_32 = Button.create(container_p2)
+btn_p_42 = Button.create(container_p2)
+
+btn_p_12.setText('detection method')
+btn_p_22.setText('radius')
+btn_p_32.setText('mass')
+btn_p_42.setText('nothing')
+
+btn_p_12.setCheckable(True)
+btn_p_22.setCheckable(True)
+btn_p_32.setCheckable(True)
+btn_p_42.setCheckable(True)
+
+btn_p_12.setRadio(True)
+btn_p_22.setRadio(True)
+btn_p_32.setRadio(True)
+btn_p_42.setRadio(True)
+
+btn_p_42.setChecked(True)
 
 ## menu to change scale factor
 menu_scale = mm.getMainMenu().addSubMenu('change scale factor')
