@@ -3070,35 +3070,35 @@ def updateGraph2():
 
 		# BTN_X
 		## mass
-		if btn_x_1.isChecked():
+		if btn_x_12.isChecked():
 			xlabel2.setText('planet mass (kg)')
 			if p._mass>0:
 				posx = math.log10( KG_from_Me(p._mass) )*1.0/math.log10( KG_from_Me(max_mass) )
 			else:
 				posx = 0
 		## radius
-		elif btn_x_2.isChecked():
+		elif btn_x_22.isChecked():
 			xlabel2.setText('planet radius (km)')
 			if p._size>0:
 				posx = math.log10( KM_from_Rj(p._size) )*1.0/math.log10( KM_from_Rj(max_size) )
 			else:
 				posx = 0
 		## orbit R (orbit)
-		elif btn_x_3.isChecked():
+		elif btn_x_32.isChecked():
 			xlabel2.setText('orbital radius (km)')
 			if p._orbit>0:
 				posx = math.log10( KM_from_AU(p._orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
 			else:
 				posx = 0
 		## orbit P (year)
-		elif btn_x_4.isChecked():
+		elif btn_x_42.isChecked():
 			xlabel2.setText('orbital period (hour)')
 			if p._year>0:
 				posx = math.log10( p._year*8760 )*1.0/math.log10( max_year*8760 )
 			else:
 				posx = 0
 		## dis to us
-		elif btn_x_5.isChecked():
+		elif btn_x_52.isChecked():
 			xlabel2.setText('distance to the Sun (lightyear)')
 			if star._dis>0:
 				posx = math.log10(star._dis)*1.0/math.log10(max_dis)
@@ -3107,35 +3107,35 @@ def updateGraph2():
 
 		# BTN_Y
 		## mass
-		if btn_y_1.isChecked():
+		if btn_y_12.isChecked():
 			ylabel2.setText('planet mass (kg)')
 			if p._mass>0:
 				posy = math.log10( KG_from_Me(p._mass) )*1.0/math.log10( KG_from_Me(max_mass) )
 			else:
 				posy = 0
 		## radius
-		elif btn_y_2.isChecked():
+		elif btn_y_22.isChecked():
 			ylabel2.setText('planet radius (km)')
 			if p._size>0:
 				posy = math.log10( KM_from_Rj(p._size) )*1.0/math.log10( KM_from_Rj(max_size) )
 			else:
 				posy = 0
 		## orbit R (orbit)
-		elif btn_y_3.isChecked():
+		elif btn_y_32.isChecked():
 			ylabel2.setText('orbital radius (km)')
 			if p._orbit>0:
 				posy = math.log10( KM_from_AU(p._orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
 			else:
 				posy = 0
 		## orbit P (year)
-		elif btn_y_4.isChecked():
+		elif btn_y_42.isChecked():
 			ylabel2.setText('orbital period (hour)')
 			if p._year>0:
 				posy = math.log10( p._year*8760 )*1.0/ math.log10( max_year*8760 )
 			else:
 				posy = 0	
 		## dis to us
-		elif btn_y_5.isChecked():
+		elif btn_y_52.isChecked():
 			ylabel2.setText('distance to the Sun (lightyear)')
 			if star._dis>0:
 				posy = math.log10(star._dis)*1.0/math.log10(max_dis)
@@ -3160,19 +3160,19 @@ def updateGraph2():
 	xnum2_1 = Label.create(container_g2)
 	
 	## mass
-	if btn_x_1.isChecked():
+	if btn_x_12.isChecked():
 		xnum2_1.setText( str( KG_from_Me(min_mass) ) )
 	## radius
-	elif btn_x_2.isChecked():
+	elif btn_x_22.isChecked():
 		xnum2_1.setText( str( KM_from_Rj(min_size) ) )
 	## orbit R (orbit)
-	elif btn_x_3.isChecked():
+	elif btn_x_32.isChecked():
 		xnum2_1.setText( str( KM_from_AU(min_orbit) ) )
 	## orbit P (year)
-	elif btn_x_4.isChecked():
+	elif btn_x_42.isChecked():
 		xnum2_1.setText( str( min_year*8760 ) )
 	## dis to us
-	elif btn_x_5.isChecked():
+	elif btn_x_52.isChecked():
 		xnum2_1.setText( str( min_dis ) )
 
 	xnum2_1.setCenter(Vector2( 0.1 * graph2.getWidth(), graph2.getWidth() + 30  ))
@@ -3182,19 +3182,19 @@ def updateGraph2():
 	xnum2_2 = Label.create(container_g2)
 
 	## mass
-	if btn_x_1.isChecked():
+	if btn_x_12.isChecked():
 		xnum2_2.setText( str( math.pow(10, math.log10(KG_from_Me(max_mass))/3) ) )
 	## radius
-	elif btn_x_2.isChecked():
+	elif btn_x_22.isChecked():
 		xnum2_2.setText( str( math.pow(10, math.log10(KM_from_Rj(max_size))/3) ) )
 	## orbit R (orbit)
-	elif btn_x_3.isChecked():
+	elif btn_x_32.isChecked():
 		xnum2_2.setText( str( math.pow(10, math.log10(KM_from_AU(max_orbit))/3) ) )
 	## orbit P (year)
-	elif btn_x_4.isChecked():
+	elif btn_x_42.isChecked():
 		xnum2_2.setText( str( math.pow(10, max_year*8760.0/3 ) ) )
 	## dis to us
-	elif btn_x_5.isChecked():
+	elif btn_x_52.isChecked():
 		xnum2_2.setText( str( math.pow(10, max_dis/3.0 ) ) )
 
 	xnum2_2.setCenter(Vector2( (0.1+0.8/3) * graph2.getWidth(), graph2.getWidth() + 30  ))
@@ -3204,19 +3204,19 @@ def updateGraph2():
 	xnum2_3 = Label.create(container_g2)
 
 	## mass
-	if btn_x_1.isChecked():
+	if btn_x_12.isChecked():
 		xnum2_3.setText( str( math.pow(10, math.log10(KG_from_Me(max_mass))*2.0/3) ) )
 	## radius
-	elif btn_x_2.isChecked():
+	elif btn_x_22.isChecked():
 		xnum2_3.setText( str( math.pow(10, math.log10(KM_from_Rj(max_size))*2.0/3) ) )
 	## orbit R (orbit)
-	elif btn_x_3.isChecked():
+	elif btn_x_32.isChecked():
 		xnum2_3.setText( str( math.pow(10, math.log10(KM_from_AU(max_orbit))*2.0/3) ) )
 	## orbit P (year)
-	elif btn_x_4.isChecked():
+	elif btn_x_42.isChecked():
 		xnum2_3.setText( str( math.pow(10, max_year*8760.0*2.0/3 ) ) )
 	## dis to us
-	elif btn_x_5.isChecked():
+	elif btn_x_52.isChecked():
 		xnum2_3.setText( str( math.pow(10, max_dis*2.0/3.0 ) ) )
 
 	xnum2_3.setCenter(Vector2( (0.9-0.8/3) * graph2.getWidth(), graph2.getWidth() + 30  ))
@@ -3226,19 +3226,19 @@ def updateGraph2():
 	xnum2_4 = Label.create(container_g2)
 
 	## mass
-	if btn_x_1.isChecked():
+	if btn_x_12.isChecked():
 		xnum2_4.setText( str( KG_from_Me(max_mass) ) )
 	## radius
-	elif btn_x_2.isChecked():
+	elif btn_x_22.isChecked():
 		xnum2_4.setText( str( KM_from_Rj(max_size) ) )
 	## orbit R (orbit)
-	elif btn_x_3.isChecked():
+	elif btn_x_32.isChecked():
 		xnum2_4.setText( str( KM_from_AU(max_orbit) ) )
 	## orbit P (year)
-	elif btn_x_4.isChecked():
+	elif btn_x_42.isChecked():
 		xnum2_4.setText( str( max_year*8760 ) )
 	## dis to us
-	elif btn_x_5.isChecked():
+	elif btn_x_52.isChecked():
 		xnum2_4.setText( str( max_dis ) )
 
 	xnum2_4.setCenter(Vector2( 0.9 * graph2.getWidth(), graph2.getWidth() + 30  ))
