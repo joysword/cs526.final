@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>We Are All Made of Stars by joysword</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>We Are All Made of Stars</h1>
+        <h2>enhancement on cs526 project 2 </h2>
+        <a href="https://github.com/joysword/cs526.final" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h2>
+<a name="the-introduction" class="anchor" href="#the-introduction"><span class="octicon octicon-link"></span></a>The Introduction</h2>
+
+<p>This project is an enhancement of our <a href="http://joysword.github.io/cs526.project2/">project 2</a>. The purpose is to practice on picking up a previous project and add features to it.</p>
+
+<p>The work is to add a 2D graph to exisiting small multiples display wall, showing planets data as a scatter plot.</p>
+
+<h1>
+<a name="the-demo" class="anchor" href="#the-demo"><span class="octicon octicon-link"></span></a>The Demo</h1>
+
+<p>Demo will be added in the afternoon of Monday, Dec 9th, 2013. Come back at that time.</p>
+
+<h1>
+<a name="the-work" class="anchor" href="#the-work"><span class="octicon octicon-link"></span></a>The Work</h1>
+
+<p>Below I describe the work I did in this enhancement:</p>
+
+<p>First, I removed a subset of the small multiples in project 2. I decided to place the graph in a side of the CAVE instead of seperating remaining small multiples in left and right sides of 3D space even more far away from each other.
+The graph I added plots all planets that are currently being showed in small multiples as a scatter plot. As our solar system will always be included in the small multiples, planets in our solar system will always be ploted onto the graph.
+When small multiples changes (when using filters or loading different predefined sets or loading from saved session), the dots or glyphs in the graph will be updated accordingly.</p>
+
+<p>There are multiple variables that we can choose for X-axis as well as Y-axis. Those variables include <strong>planet mass</strong>, <strong>planet radius</strong>, <strong>orbital radius</strong>, <strong>orbital period</strong>, and <strong>distance to our solar system</strong>.
+Besides, we can also configure the dots themselves. We can use sizes of the dots in the graph to show the relative mass or radius of the planets. We can also change the dots into glyphs that show the detection method of a planet.
+Normally, dots are in white color, but those who are highlighted in the small multiples are red dots.</p>
+
+<p>The new graph were added into the old project in an integrated way that it not only doesn't diminish functionality of old part of the project but also works with old part together as a whole. What's more, some part of the old project were also enhanced. For example, outlining box of a small multiple now will have a different color when being pointed at or is selected during re-ordering.</p>
+
+<p>By pointing the wand to the graph, we can integrate with it. During this period, the interaction ability of the wand has been limited to the graph, so it will not mistakenly activate other event in our old project.
+A crosshair will be moving around the graph as we pointing the wand at the graph and move it. Whichever dot/glyph that is being pointed at will be enlarged so we get a general idea of what we are doing.</p>
+
+<p>By pressing <code>Button2</code> (i.e. the <code>circle</code> button), the information about the system to which the planet that we are pointing at belong will pop up. The information is the same as we have for the system in the center in the original project. Pointing the wand to the information and press <code>Button2</code> again will close it.</p>
+
+<p>Another operation available to the users is pressing <code>Button3</code> when pointing at a planet in the graph. This action calls the function that bring a system into our 'central 3D showcase', using this planet's hosting system as the parameter. This function is also integrated with the enhancement of old project mentioned above. The system that are brought to the center will be highlighted in the small multiples.
+This is another good example of how this new comer get along with old fellas in the wall.</p>
+
+<h1>
+<a name="the-data" class="anchor" href="#the-data"><span class="octicon octicon-link"></span></a>The Data</h1>
+
+<p>I would like to talk a little more about the data.</p>
+
+<p>Due to the nature of the universe, I chose to use logarithmic scale for ALL five variables for X-axis and Y-axis. And the origin point of the axes is not zero, but some value that are a little bit smaller than the smallest value in the graph. Similarly, the scale is also based on maximum and minimum values in the graph, and thus the extreme value that the graph can contain is also dynamic.
+The reason behind this decision is that in this way we can plot the dots generally over all the space we have in the graph, which then makes the graph looks much better than 'huge empty space + massive dots in a corner'.</p>
+
+<p>As for the point representation, I used logarithmic scale for <strong>radius</strong> and linear scale for <strong>mass</strong>.</p>
+
+<p>To play with logarithmic scale, the most important thing is to make all the values are larger than 1. Because otherwise we will have negative values or some errors from python (when we have 0). So I converted everything to very small units (thus very huge numbers).</p>
+
+<ul>
+<li>For <strong>mass</strong>, <code>Kilogram</code> is used.</li>
+<li>For <strong>planet radius</strong> and <strong>orbital radius</strong>, <code>Kilometer</code> is used.</li>
+<li>For <strong>orbital period</strong>, <code>Hour</code> is used.</li>
+<li>For <strong>distance to our solar system</strong>, <code>Lightyear</code> is used, because no value is small than 1 (except 0 for our solar system, which has been handled specially)</li>
+</ul><h1>
+<a name="the-extra" class="anchor" href="#the-extra"><span class="octicon octicon-link"></span></a>The Extra</h1>
+
+<p>I have a second graph added, this way it is much more convenient for people to compare different X/Y axis assignment of differnt variables.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/joysword/cs526.final/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/joysword/cs526.final/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/joysword/cs526.final"></a> is maintained by <a href="https://github.com/joysword">joysword</a>.</p>
+
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
