@@ -38,7 +38,11 @@ The reason behind this decision is that in this way we can plot the dots general
 
 As for the point representation, I used logarithmic scale for **radius** and linear scale for **mass**.
 
-To play with logarithmic scale, the most important thing is to make all the values are larger than 1. Because otherwise we will have negative values or some errors from python (when we have 0). So I converted everything to very small units (thus very huge numbers). For **mass**, `Kilogram` is used. For **planet radius** and **orbital radius**, `Kilometer` is used. For **orbital period**, `Hour` is used. For **distance to our solar system**, `Lightyear` is used, because no value is small than 1 (except 0 for our solar system, which has been handled specially).
+To play with logarithmic scale, the most important thing is to make all the values are larger than 1. Because otherwise we will have negative values or some errors from python (when we have 0). So I converted everything to very small units (thus very huge numbers).
+* For **mass**, `Kilogram` is used.
+* For **planet radius** and **orbital radius**, `Kilometer` is used.
+* For **orbital period**, `Hour` is used.
+* For **distance to our solar system**, `Lightyear` is used, because no value is small than 1 (except 0 for our solar system, which has been handled specially)
 
 # The Extra
 I have a second graph added, this way it is much more convenient for people to compare different X/Y axis assignment of differnt variables.
