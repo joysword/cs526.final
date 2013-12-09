@@ -3450,7 +3450,7 @@ def onEvent():
 			playSound(sd_mtc_quit, cam.getPosition(), 0.5)
 			print ('quit move to center mode')
 			# quit highlight
-			finalight_box(g_cur_highlight_box,False)
+			highlight_box(g_cur_highlight_box,False)
 			g_cur_highlight_box = None
 		else:
 			r = getRayFromEvent(e)
@@ -3464,8 +3464,8 @@ def onEvent():
 						# print 'node name:',node.getParent().getName()
 						# if g_cur_highlight_box!=None:
 						# 	print 'g_cur name:',g_cur_highlight_box.getParent().getName()
-						finalight_box(node,True)
-						finalight_box(g_cur_highlight_box,False)
+						highlight_box(node,True)
+						highlight_box(g_cur_highlight_box,False)
 						g_cur_highlight_box=node
 						print 'change'
 						# print 'node',node
@@ -3488,7 +3488,7 @@ def onEvent():
 							g_moveToCenter=0
 							playSound(sd_mtc_moving, cam.getPosition(), 0.5)
 							# quit highlight
-							finalight_box(g_cur_highlight_box,False)
+							highlight_box(g_cur_highlight_box,False)
 							g_cur_highlight_box = None
 					break
 
@@ -3501,10 +3501,10 @@ def onEvent():
 			pointer.setVisible(False)
 			playSound(sd_reo_quit, cam.getPosition(), 0.5)
 			if g_cur_highlight_i != -100:
-				finalight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)
+				highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)
 				g_cur_highlight_i=-100
 			if g_cur_highlight_i_blue != -100:
-				finalight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByIndex(0),False)
+				highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByIndex(0),False)
 				g_cur_highlight_i_blue=-100
 			print 'quit reorder mode'
 			# quit highlight
@@ -3516,16 +3516,16 @@ def onEvent():
 				hitData = hitNode(node, r[1], r[2])
 				if hitData[0]==True:
 					if i!=g_cur_highlight_i: #if g_cur_highlight_box==None or node.getParent()!=g_cur_highlight_box.getParent():
-						finalight_box(node,True)
+						highlight_box(node,True)
 						if g_cur_highlight_i!=-100:
-							finalight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)#final_highlight_box(g_cur_highlight_box,False)
+							highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)#final_highlight_box(g_cur_highlight_box,False)
 						g_cur_highlight_i=i # g_cur_highlight_box = node
 					pointer.setPosition(hitData[1])
 					# select a box
 					if e.isButtonDown(EventFlags.Button2):
 						e.setProcessed()
 						g_reorder=2
-						finalight_box_blue(node,True)
+						highlight_box_blue(node,True)
 						g_cur_highlight_i_blue = i
 						print 'box color changed to BLUE'
 						num_reorder = i # record this node's order
@@ -3542,7 +3542,7 @@ def onEvent():
 			playSound(sd_reo_canceled, cam.getPosition(), 0.5)
  			print ('cenceled')
  			# quit highlight blue
- 			finalight_box_blue(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByIndex(0),False)
+ 			highlight_box_blue(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByIndex(0),False)
 			g_cur_highlight_i_blue = -100
 			print 'BLUE CANCELED'
  		else:
@@ -3553,9 +3553,9 @@ def onEvent():
 				hitData = hitNode(node, r[1], r[2])
 				if hitData[0]:
 					if i!=g_cur_highlight_i and i!=g_cur_highlight_i_blue:#if node!=g_cur_highlight_box and node!=g_cur_highlight_box_blue:
-						finalight_box(node,True)
+						highlight_box(node,True)
 						if g_cur_highlight_i!=-100 and g_cur_highlight_i!=g_cur_highlight_i_blue:
-							finalight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)
+							highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)
 						g_cur_highlight_i=i
 						print 'RED CHANGED'
 					pointer.setPosition(hitData[1])
@@ -3606,10 +3606,10 @@ def onEvent():
 			 				playSound(sd_reo_done, cam.getPosition(), 0.5)
 			 				g_reorder=1
 			 				# quit highlight
-			 				finalight_box_blue(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByIndex(0),False)
+			 				highlight_box_blue(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i_blue])).getChildByIndex(0),False)
 			 				g_cur_highlight_i_blue = -100
 			 				print 'BLUE CANCELED'
-			 				finalight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)
+			 				highlight_box(sn_smallMulti.getChildByName('smallTrans'+str(g_curOrder[g_cur_highlight_i])).getChildByName('boxParent'+str(g_curOrder[g_cur_highlight_i])).getChildByIndex(0),False)
 			 				g_cur_highlight_i = -100
 			 				print 'RED CANCELED'
 			 		break
