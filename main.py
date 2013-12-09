@@ -2228,10 +2228,8 @@ def showNews(s):
 
 ## create graph 1 container
 container_g1 = Container.create(ContainerLayout.LayoutFree, ui.getUi())
-container_g1.setStyleValue('fill', '#11296b80')
-container_g1.setStyleValue('border', '4 #14b822ff')
-
-container_g1.setAutosize(False)
+container_g1.setStyleValue('fill', '#32ed8b55')
+container_g1.setStyleValue('border', '4 #2acee9ff')
 if CAVE():
 	container_g1.setSize(Vector2(2732-4, 1536-4))
 	container_g1.setPadding(0)
@@ -2242,16 +2240,17 @@ else:
 	container_g1.setPosition(Vector2(20, 20))
 container_g1.setBlendMode(WidgetBlendMode.BlendNormal)
 container_g1.setAlpha(1.0)
+container_g1.setAutosize(False)
 
 ## create graph 1
 graph1 = Container.create(ContainerLayout.LayoutFree, container_g1)
-graph1.setStyleValue('border', '1 #14b822ff')
-graph1.setPosition(Vector2(50,50))
+graph1.setPosition(Vector2(200,50))
 if CAVE():
-	graph1.setSize(Vector2(2732-4-104, 1536-4-104))
+	graph1.setSize(Vector2(2478, 1332))
 else:
 	graph1.setSize(Vector2((2732-4-104)*0.2, (1536-4-104)*0.2))
-graph1.setClippingEnabled(True)
+# graph1.setClippingEnabled(True)
+graph1.setAutosize(False)
 
 ## create x label
 xlabel1 = Label.create(container_g1)
@@ -2265,17 +2264,21 @@ if CAVE():
 else:
 	xlabel1.setFont('fonts/arial.ttf 14')
 xlabel1.setCenter(Vector2(container_g1.getSize().x*0.5,container_g1.getSize().y-50))
+xlabel1.setAutosize(False)
 
 ## create y label
 ylabel1 = Label.create(container_g1)
 ylabel1.setText('')
 ylabel1.setColor(Color('white'))
+#ylabel1.setSize(Vector2(container_g1.getWidth(), 50 ))
+ylabel1.setSize(Vector2(50, container_g1.getWidth()))
+ylabel1.setAutosize(False)
 if CAVE():
 	ylabel1.setFont('fonts/arial.ttf 76')
 else:
 	ylabel1.setFont('fonts/arial.ttf 14')
-ylabel1.setCenter(Vector2(50,container_g1.getSize().y*0.5))
-ylabel1.setStyleValue('align', 'middle-center')
+ylabel1.setPosition(Vector2(0,container_g1.getSize().y*0.5))
+#ylabel1.setStyleValue('align', 'middle-center')
 ylabel1.setRotation(-90)
 
 ## create p label
@@ -2287,6 +2290,20 @@ if CAVE():
 else:
 	plabel1.setFont('fonts/arial.ttf 14')
 plabel1.setCenter(Vector2(container_g1.getSize().x*0.5,50))
+
+## create x axis
+xaxis = Container.create(ContainerLayout.LayoutFree, container_g1)
+xaxis.setSize(Vector2(graph1.getWidth(), 2))
+xaxis.setStyleValue('border', '4 #ffffffff')
+xaxis.setAutosize(False)
+xaxis.setPosition(Vector2(graph1.getPosition().x,graph1.getPosition().y+graph1.getHeight()))
+
+## create y axis
+yaxis = Container.create(ContainerLayout.LayoutFree, container_g1)
+yaxis.setSize(Vector2(2, graph1.getHeight()))
+yaxis.setStyleValue('border', '4 #ffffffff')
+yaxis.setAutosize(False)
+yaxis.setPosition(Vector2(graph1.getPosition().x,graph1.getPosition().y))
 
 ## create graph 2
 # graph2 = Container.create(ContainerLayout.LayoutFree, ui.getUi())
@@ -2406,7 +2423,8 @@ def updateGraph():
 	min_dis = max_dis
 
 	for i in xrange(len(li_dotOnWall)):
-
+		p = li_dotOnWall[i].getPla()
+		star = li_dotOnWall[i].getSys()._star
 		if p._mass>0 and p._mass<min_mass:
 			min_mass = p._mass
 		if p._size>0 and p._size<min_size:
@@ -2486,7 +2504,10 @@ def updateGraph():
 				img.setData(img_other)
 			elif cmp(p._detection,'Microlensing')==0:	
 				img.setData(img_other)
-			img.setSize(Vector2(48,48))
+			if CAVE():
+				img.setSize(Vector2(45,45))
+			else:
+				img.setSize(Vector2(9,9))
 		## radius
 		elif btn_p_2.isChecked():
 			# print 'radius'
@@ -2495,10 +2516,16 @@ def updateGraph():
 				img.setData(img_highlight)
 			else:
 				img.setData(img_star)
-			if CAVE():
-				img.setSize(Vector2(math.log10( KM_from_Rj(p._size) )*100.0/math.log10( KM_from_Rj(max_size) ),math.log10( KM_from_Rj(p._size) )*100.0/math.log10( KM_from_Rj(max_size) )))
+			if p._size>0:
+				if CAVE():
+					img.setSize(Vector2(math.log10( KM_from_Rj(p._size) )*100.0/math.log10( KM_from_Rj(max_size) ),math.log10( KM_from_Rj(p._size) )*100.0/math.log10( KM_from_Rj(max_size) )))
+					# img.setSize(Vector2(p._size*100.0/max_size,p._size*100.0/max_size))
+				else:
+					img.setSize(Vector2(math.log10(KM_from_Rj(p._size) )*20.0/math.log10( KM_from_Rj(max_size) ),math.log10( KM_from_Rj(p._size) )*20.0/math.log10( KM_from_Rj( max_size ) )))
+					# img.setSize(Vector2(p._size*20.0/max_size,p._size*20.0/max_size))
 			else:
-				img.setSize(Vector2(math.log10(KM_from_Rj(p._size) )*20.0/math.log10( KM_from_Rj(max_size) ),math.log10( KM_from_Rj(p._size) )*20.0/math.log10( KM_from_Rj( max_size ) )))
+				img.setSize(Vector2(1,1))
+			print 'img size:',img.getSize()
 		## mass
 		elif btn_p_3.isChecked():
 			# print 'mass'
@@ -2507,10 +2534,16 @@ def updateGraph():
 				img.setData(img_highlight)
 			else:
 				img.setData(img_star)
-			if CAVE():
-				img.setSize(Vector2(math.log10( KG_from_Me(p._mass) )*100.0/math.log10( KG_from_Me(max_mass) ),math.log10( KG_from_Me(p._mass) )*100.0/math.log10( KG_from_Me(max_mass) ) ))
+			if p._mass>0:
+				if CAVE():
+					# img.setSize(Vector2(math.log10( KG_from_Me(p._mass) )*100.0/math.log10( KG_from_Me(max_mass) ),math.log10( KG_from_Me(p._mass) )*100.0/math.log10( KG_from_Me(max_mass) ) ))
+					img.setSize(Vector2(p._mass*100.0/max_mass,p._mass*100.0/max_mass))
+				else:
+					# img.setSize(Vector2(math.log10( KG_from_Me(p._mass) )*20.0/math.log10( KG_from_Me(max_mass) ),math.log10( KG_from_Me(p._mass) )*20.0/math.log10( KG_from_Me(max_mass) ) ))
+					img.setSize(Vector2(p._mass*20.0/max_mass,p._mass*20.0/max_mass))
 			else:
-				img.setSize(Vector2(math.log10( KG_from_Me(p._mass) )*20.0/math.log10( KG_from_Me(max_mass) ),math.log10( KG_from_Me(p._mass) )*20.0/math.log10( KG_from_Me(max_mass) ) ))
+				img.setSize(Vector2(1,1))
+			print 'img size:',img.getSize()
 		else:
 			plabel1.setText('')
 			if needHighlight(li_dotOnWall[i].getSys(),star,p):
@@ -2518,9 +2551,9 @@ def updateGraph():
 			else:
 				img.setData(img_star)
 			if CAVE():
-				img.setSize(Vector2(48,48))
+				img.setSize(Vector2(45,45))
 			else:
-				img.setSize(Vector2(10,10))
+				img.setSize(Vector2(9,9))
 
 		# BTN_X
 		## mass
@@ -2600,15 +2633,106 @@ def updateGraph():
 		yy = 0
 
 		if posx != 0:
-			# print 'posx:', posx
-			# print 'x!!!!!:', (posx-minx)/(1-minx)
-			xx = 0.8 * graph1.getSize().x * (posx-minx)/(1-minx) + 0.1 * graph1.getSize().x
+			# if posx<minx:
+			# 	print 'posx, minx:', minx, posx
+			xx = 0.8 * graph1.getWidth() * (posx-minx)/(1-minx) + 0.1 * graph1.getWidth()
 		if posy != 0:
-			yy = 0.8 * graph1.getSize().y * ( 1 - (posy-miny)/(1-miny) ) + 0.1 * graph1.getSize().y
+			yy = 0.8 * graph1.getHeight() * ( 1 - (posy-miny)/(1-miny) ) + 0.1 * graph1.getHeight()
 		img.setCenter( Vector2(xx,yy) )
+		# print 'x,y:',xx,yy
 		li_dotOnWall[i].setImage(img)
 
+	## draw numbers on x axis
+	### 0.1 min
+	xnum1_1 = Label.create(container_g1)
+	
+	## mass
+	if btn_x_1.isChecked():
+		xnum1_1.setText( str( KG_from_Me(min_mass) ) )
+	## radius
+	elif btn_x_2.isChecked():
+		xnum1_1.setText( str( KM_from_Rj(min_size) ) )
+	## orbit R (orbit)
+	elif btn_x_3.isChecked():
+		xnum1_1.setText( str( KM_from_AU(min_orbit) ) )
+	## orbit P (year)
+	elif btn_x_4.isChecked():
+		xnum1_1.setText( str( min_year*8760 ) )
+	## dis to us
+	elif btn_x_5.isChecked():
+		xnum1_1.setText( str( min_dis ) )
+
+	xnum1_1.setCenter(Vector2( 0.1 * graph1.getWidth(), graph1.getWidth() + 30  ))
+	xnum1_1.setFont('fonts/helvetica.ttf 50')
+
+	### 0.1 + 0.8/3
+	xnum1_2 = Label.create(container_g1)
+
+	## mass
+	if btn_x_1.isChecked():
+		xnum1_2.setText( str( math.pow(10, math.log10(KG_from_Me(max_mass))/3) ) )
+	## radius
+	elif btn_x_2.isChecked():
+		xnum1_2.setText( str( math.pow(10, math.log10(KM_from_Rj(max_size))/3) ) )
+	## orbit R (orbit)
+	elif btn_x_3.isChecked():
+		xnum1_2.setText( str( math.pow(10, math.log10(KM_from_AU(max_orbit))/3) ) )
+	## orbit P (year)
+	elif btn_x_4.isChecked():
+		xnum1_2.setText( str( math.pow(10, max_year*8760.0/3 ) ) )
+	## dis to us
+	elif btn_x_5.isChecked():
+		xnum1_2.setText( str( math.pow(10, max_dis/3.0 ) ) )
+
+	xnum1_2.setCenter(Vector2( (0.1+0.8/3) * graph1.getWidth(), graph1.getWidth() + 30  ))
+	xnum1_2.setFont('fonts/helvetica.ttf 50')
+
+	### 0.9 - 0.8/3
+	xnum1_3 = Label.create(container_g1)
+
+	## mass
+	if btn_x_1.isChecked():
+		xnum1_3.setText( str( math.pow(10, math.log10(KG_from_Me(max_mass))*2.0/3) ) )
+	## radius
+	elif btn_x_2.isChecked():
+		xnum1_3.setText( str( math.pow(10, math.log10(KM_from_Rj(max_size))*2.0/3) ) )
+	## orbit R (orbit)
+	elif btn_x_3.isChecked():
+		xnum1_3.setText( str( math.pow(10, math.log10(KM_from_AU(max_orbit))*2.0/3) ) )
+	## orbit P (year)
+	elif btn_x_4.isChecked():
+		xnum1_3.setText( str( math.pow(10, max_year*8760.0*2.0/3 ) ) )
+	## dis to us
+	elif btn_x_5.isChecked():
+		xnum1_3.setText( str( math.pow(10, max_dis*2.0/3.0 ) ) )
+
+	xnum1_3.setCenter(Vector2( (0.9-0.8/3) * graph1.getWidth(), graph1.getWidth() + 30  ))
+	xnum1_3.setFont('fonts/helvetica.ttf 50')
+
+	### 0.9 max
+	xnum1_4 = Label.create(container_g1)
+
+	## mass
+	if btn_x_1.isChecked():
+		xnum1_4.setText( str( KG_from_Me(max_mass) ) )
+	## radius
+	elif btn_x_2.isChecked():
+		xnum1_4.setText( str( KM_from_Rj(max_size) ) )
+	## orbit R (orbit)
+	elif btn_x_3.isChecked():
+		xnum1_4.setText( str( KM_from_AU(max_orbit) ) )
+	## orbit P (year)
+	elif btn_x_4.isChecked():
+		xnum1_4.setText( str( max_year*8760 ) )
+	## dis to us
+	elif btn_x_5.isChecked():
+		xnum1_4.setText( str( max_dis ) )
+
+	xnum1_4.setCenter(Vector2( 0.9 * graph1.getWidth(), graph1.getWidth() + 30  ))
+	xnum1_4.setFont('fonts/helvetica.ttf 50')
+
 	print 'done'
+
 
 
 updateGraph()
