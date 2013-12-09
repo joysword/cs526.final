@@ -193,7 +193,7 @@ class planet:
 				self._mass = 0
 				self._size = 0
 			else:
-				self._mass = float(mass) * M_earth
+				self._mass = float(mass) * M_earth # to KM
 				self._size = self.__getSizeFromMass(self._mass)
 				#print 'size:',self._size
 		else:
@@ -2602,13 +2602,13 @@ def updateGraph():
 	''' get min for x (0-1)'''
 	## mass
 	if btn_x_1.isChecked():
-		minx = math.log10( KG_from_Me(min_mass) )*1.0/math.log10( KG_from_Me(max_mass) )
+		minx = math.log10( min_mass )*1.0/math.log10( (max_mass) )
 	## radius
 	elif btn_x_2.isChecked():
-		minx = math.log10( KM_from_Rj(min_size) )*1.0/math.log10( KM_from_Rj(max_size) )
+		minx = math.log10( (min_size) )*1.0/math.log10( (max_size) )
 	## orbit R (orbit)
 	elif btn_x_3.isChecked():
-		minx = math.log10( KM_from_AU(min_orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
+		minx = math.log10( (min_orbit) )*1.0/math.log10( (max_orbit) )
 	## orbit P (year)
 	elif btn_x_4.isChecked():
 		minx = math.log10( min_year*8760 )*1.0/math.log10( max_year*8760 )
@@ -2619,13 +2619,13 @@ def updateGraph():
 	''' get min for y (0-1)'''
 	## mass
 	if btn_y_1.isChecked():
-		miny = math.log10( KG_from_Me(min_mass) )*1.0/math.log10( KG_from_Me(max_mass) )
+		miny = math.log10( (min_mass) )*1.0/math.log10( (max_mass) )
 	## radius
 	elif btn_y_2.isChecked():
-		miny = math.log10( KM_from_Rj(min_size) )*1.0/math.log10( KM_from_Rj(max_size) )
+		miny = math.log10( (min_size) )*1.0/math.log10( (max_size) )
 	## orbit R (orbit)
 	elif btn_y_3.isChecked():
-		miny = math.log10( KM_from_AU(min_orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
+		miny = math.log10( (min_orbit) )*1.0/math.log10( (max_orbit) )
 	## orbit P (year)
 	elif btn_y_4.isChecked():
 		miny = math.log10( min_year*8760 )*1.0/math.log10( max_year*8760 )
@@ -2678,10 +2678,10 @@ def updateGraph():
 				img.setData(img_star)
 			if p._size>0:
 				if CAVE():
-					img.setSize(Vector2(math.log10( KM_from_Rj(p._size) )*100.0/math.log10( KM_from_Rj(max_size) ),math.log10( KM_from_Rj(p._size) )*100.0/math.log10( KM_from_Rj(max_size) )))
+					img.setSize(Vector2(math.log10( (p._size) )*100.0/math.log10( (max_size) ),math.log10( (p._size) )*100.0/math.log10( (max_size) )))
 					# img.setSize(Vector2(p._size*100.0/max_size,p._size*100.0/max_size))
 				else:
-					img.setSize(Vector2(math.log10(KM_from_Rj(p._size) )*20.0/math.log10( KM_from_Rj(max_size) ),math.log10( KM_from_Rj(p._size) )*20.0/math.log10( KM_from_Rj( max_size ) )))
+					img.setSize(Vector2(math.log10((p._size) )*20.0/math.log10( (max_size) ),math.log10( (p._size) )*20.0/math.log10( ( max_size ) )))
 					# img.setSize(Vector2(p._size*20.0/max_size,p._size*20.0/max_size))
 			else:
 				img.setSize(Vector2(1,1))
@@ -2696,10 +2696,10 @@ def updateGraph():
 				img.setData(img_star)
 			if p._mass>0:
 				if CAVE():
-					# img.setSize(Vector2(math.log10( KG_from_Me(p._mass) )*100.0/math.log10( KG_from_Me(max_mass) ),math.log10( KG_from_Me(p._mass) )*100.0/math.log10( KG_from_Me(max_mass) ) ))
+					# img.setSize(Vector2(math.log10( (p._mass) )*100.0/math.log10( (max_mass) ),math.log10( (p._mass) )*100.0/math.log10( (max_mass) ) ))
 					img.setSize(Vector2(p._mass*100.0/max_mass,p._mass*100.0/max_mass))
 				else:
-					# img.setSize(Vector2(math.log10( KG_from_Me(p._mass) )*20.0/math.log10( KG_from_Me(max_mass) ),math.log10( KG_from_Me(p._mass) )*20.0/math.log10( KG_from_Me(max_mass) ) ))
+					# img.setSize(Vector2(math.log10( (p._mass) )*20.0/math.log10( (max_mass) ),math.log10( (p._mass) )*20.0/math.log10( (max_mass) ) ))
 					img.setSize(Vector2(p._mass*20.0/max_mass,p._mass*20.0/max_mass))
 			else:
 				img.setSize(Vector2(1,1))
@@ -2720,21 +2720,21 @@ def updateGraph():
 		if btn_x_1.isChecked():
 			xlabel1.setText('planet mass (kg)')
 			if p._mass>0:
-				posx = math.log10( KG_from_Me(p._mass) )*1.0/math.log10( KG_from_Me(max_mass) )
+				posx = math.log10( (p._mass) )*1.0/math.log10( (max_mass) )
 			else:
 				posx = 0
 		## radius
 		elif btn_x_2.isChecked():
 			xlabel1.setText('planet radius (km)')
 			if p._size>0:
-				posx = math.log10( KM_from_Rj(p._size) )*1.0/math.log10( KM_from_Rj(max_size) )
+				posx = math.log10( (p._size) )*1.0/math.log10( (max_size) )
 			else:
 				posx = 0
 		## orbit R (orbit)
 		elif btn_x_3.isChecked():
 			xlabel1.setText('orbital radius (km)')
 			if p._orbit>0:
-				posx = math.log10( KM_from_AU(p._orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
+				posx = math.log10( (p._orbit) )*1.0/math.log10( (max_orbit) )
 			else:
 				posx = 0
 		## orbit P (year)
@@ -2757,21 +2757,21 @@ def updateGraph():
 		if btn_y_1.isChecked():
 			ylabel1.setText('planet mass (kg)')
 			if p._mass>0:
-				posy = math.log10( KG_from_Me(p._mass) )*1.0/math.log10( KG_from_Me(max_mass) )
+				posy = math.log10( (p._mass) )*1.0/math.log10( (max_mass) )
 			else:
 				posy = 0
 		## radius
 		elif btn_y_2.isChecked():
 			ylabel1.setText('planet radius (km)')
 			if p._size>0:
-				posy = math.log10( KM_from_Rj(p._size) )*1.0/math.log10( KM_from_Rj(max_size) )
+				posy = math.log10( (p._size) )*1.0/math.log10( (max_size) )
 			else:
 				posy = 0
 		## orbit R (orbit)
 		elif btn_y_3.isChecked():
 			ylabel1.setText('orbital radius (km)')
 			if p._orbit>0:
-				posy = math.log10( KM_from_AU(p._orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
+				posy = math.log10( (p._orbit) )*1.0/math.log10( (max_orbit) )
 			else:
 				posy = 0
 		## orbit P (year)
@@ -2812,18 +2812,18 @@ def updateGraph():
 	
 	## mass
 	if btn_x_1.isChecked():
-		xnum1_1.setText( str( round(KG_from_Me(min_mass),2) ) )
+		xnum1_1.setText( str( round(min_mass,2) ) )
 		# print 'round:',round(float(KG_from_Me(min_mass)),2)
 		# print 'xnum1_1:',xnum1_1.getText()
 	## radius
 	elif btn_x_2.isChecked():
-		xnum1_1.setText( str( round(KM_from_Rj(min_size),2) ) )
+		xnum1_1.setText( str( round((min_size),2) ) )
 	## orbit R (orbit)
 	elif btn_x_3.isChecked():
-		xnum1_1.setText( str( round(KM_from_AU(min_orbit),2) ) )
+		xnum1_1.setText( str( round((min_orbit),2) ) )
 	## orbit P (year)
 	elif btn_x_4.isChecked():
-		xnum1_1.setText( str( round(min_year*8760,2) ) )
+		xnum1_1.setText( str( min_year*8760 ) )
 	## dis to us
 	elif btn_x_5.isChecked():
 		xnum1_1.setText( str( min_dis ) )
@@ -2838,13 +2838,13 @@ def updateGraph():
 
 	## mass
 	if btn_x_1.isChecked():
-		xnum1_2.setText( str( round(math.pow(10, math.log10(KG_from_Me(max_mass)) * (minx+(1-minx)/3.0) ),2) ) )
+		xnum1_2.setText( str( round(math.pow(10, math.log10((max_mass)) * (minx+(1-minx)/3.0) ),2) ) )
 	## radius
 	elif btn_x_2.isChecked():
-		xnum1_2.setText( str( round(math.pow(10, math.log10(KM_from_Rj(max_size)) * (minx+(1-minx)/3.0) ),2) ) )
+		xnum1_2.setText( str( round(math.pow(10, math.log10((max_size)) * (minx+(1-minx)/3.0) ),2) ) )
 	## orbit R (orbit)
 	elif btn_x_3.isChecked():
-		xnum1_2.setText( str( round(math.pow(10, math.log10(KM_from_AU(max_orbit)) * (minx+(1-minx)/3.0) ),2) ) )
+		xnum1_2.setText( str( round(math.pow(10, math.log10((max_orbit)) * (minx+(1-minx)/3.0) ),2) ) )
 	## orbit P (year)
 	elif btn_x_4.isChecked():
 		xnum1_2.setText( str( round(math.pow(10, max_year*8760.0 * (minx+(1-minx)/3.0) ),2) ) )
@@ -2854,6 +2854,7 @@ def updateGraph():
 
 	xnum1_2.setCenter(Vector2( (0.1+0.8/3) * graph1.getWidth(), graph1.getHeight() + 25  ))
 	xnum1_2.setFont('fonts/helvetica.ttf 50')
+	xnum1_2.setAutosize(False)
 	xnum1_2.setColor(Color('white'))
 
 	### 0.9 - 0.8/3
@@ -2861,13 +2862,13 @@ def updateGraph():
 
 	## mass
 	if btn_x_1.isChecked():
-		xnum1_3.setText( str( round(math.pow(10, math.log10(KG_from_Me(max_mass))*(minx+2*(1-minx)/3.0) ),2) ) )
+		xnum1_3.setText( str( round(math.pow(10, math.log10((max_mass))*(minx+2*(1-minx)/3.0) ),2) ) )
 	## radius
 	elif btn_x_2.isChecked():
-		xnum1_3.setText( str( round(math.pow(10, math.log10(KM_from_Rj(max_size))*(minx+2*(1-minx)/3.0)),2) ) )
+		xnum1_3.setText( str( round(math.pow(10, math.log10((max_size))*(minx+2*(1-minx)/3.0)),2) ) )
 	## orbit R (orbit)
 	elif btn_x_3.isChecked():
-		xnum1_3.setText( str( round(math.pow(10, math.log10(KM_from_AU(max_orbit))*(minx+2*(1-minx)/3.0)),2) ) )
+		xnum1_3.setText( str( round(math.pow(10, math.log10((max_orbit))*(minx+2*(1-minx)/3.0)),2) ) )
 	## orbit P (year)
 	elif btn_x_4.isChecked():
 		xnum1_3.setText( str( round(math.pow(10, max_year*8760.0*(minx+2*(1-minx)/3.0) ),2) ) )
@@ -2877,6 +2878,7 @@ def updateGraph():
 
 	xnum1_3.setCenter(Vector2( (0.9-0.8/3) * graph1.getWidth(), graph1.getHeight() + 25  ))
 	xnum1_3.setFont('fonts/helvetica.ttf 50')
+	xnum1_3.setAutosize(False)
 	xnum1_3.setColor(Color('white'))
 
 	### 0.9 max
@@ -2884,13 +2886,13 @@ def updateGraph():
 
 	## mass
 	if btn_x_1.isChecked():
-		xnum1_4.setText( str( round(KG_from_Me(max_mass),2) ) )
+		xnum1_4.setText( str( round((max_mass),2) ) )
 	## radius
 	elif btn_x_2.isChecked():
-		xnum1_4.setText( str( round(KM_from_Rj(max_size),2) ) )
+		xnum1_4.setText( str( round((max_size),2) ) )
 	## orbit R (orbit)
 	elif btn_x_3.isChecked():
-		xnum1_4.setText( str( round(KM_from_AU(max_orbit),2) ) )
+		xnum1_4.setText( str( round((max_orbit),2) ) )
 	## orbit P (year)
 	elif btn_x_4.isChecked():
 		xnum1_4.setText( str( round(max_year*8760,2) ) )
@@ -2900,6 +2902,7 @@ def updateGraph():
 
 	xnum1_4.setCenter(Vector2( 0.9 * graph1.getWidth(), graph1.getHeight() + 25  ))
 	xnum1_4.setFont('fonts/helvetica.ttf 50')
+	xnum1_4.setAutosize(False)
 	xnum1_4.setColor(Color('white'))
 
 	## draw numbers on y axis
@@ -2907,13 +2910,13 @@ def updateGraph():
 	ynum1_1 = Label.create(graph1)
 	## mass
 	if btn_y_1.isChecked():
-		ynum1_1.setText( str( round(KG_from_Me(min_mass),2) ) )
+		ynum1_1.setText( str( round((min_mass),2) ) )
 	## radius
 	elif btn_y_2.isChecked():
-		ynum1_1.setText( str( round(KM_from_Rj(min_size),2) ) )
+		ynum1_1.setText( str( round((min_size),2) ) )
 	## orbit R (orbit)
 	elif btn_y_3.isChecked():
-		ynum1_1.setText( str( round(KM_from_AU(min_orbit),2) ) )
+		ynum1_1.setText( str( round((min_orbit),2) ) )
 	## orbit P (year)
 	elif btn_y_4.isChecked():
 		ynum1_1.setText( str( round(min_year*8760,2) ) )
@@ -2921,79 +2924,86 @@ def updateGraph():
 	elif btn_y_5.isChecked():
 		ynum1_1.setText( str( min_dis ) )
 
-	ynum1_1.setCenter(Vector2( 0.1 * graph1.getWidth(), graph1.getHeight() + 25  ))
+	ynum1_1.setCenter(Vector2(-25,0.9 * graph1.getHeight()))
 	ynum1_1.setFont('fonts/helvetica.ttf 50')
 	ynum1_1.setColor(Color('white'))
+	ynum1_1.setAutosize(False)
 	ynum1_1.setRotation(-90)
 
 	### 0.1 + 0.8/3
 	ynum1_2 = Label.create(graph1)
 
 	## mass
-	if btn_x_1.isChecked():
-		ynum1_2.setText( str( round(math.pow(10, math.log10(KG_from_Me(max_mass)) * (minx+(1-minx)/3.0) ),2) ) )
+	if btn_y_1.isChecked():
+		ynum1_2.setText( str( round(math.pow(10, math.log10((max_mass)) * (minx+(1-minx)/3.0) ),2) ) )
 	## radius
-	elif btn_x_2.isChecked():
-		ynum1_2.setText( str( round(math.pow(10, math.log10(KM_from_Rj(max_size)) * (minx+(1-minx)/3.0) ),2) ) )
+	elif btn_y_2.isChecked():
+		ynum1_2.setText( str( round(math.pow(10, math.log10((max_size)) * (minx+(1-minx)/3.0) ),2) ) )
 	## orbit R (orbit)
-	elif btn_x_3.isChecked():
-		ynum1_2.setText( str( round(math.pow(10, math.log10(KM_from_AU(max_orbit)) * (minx+(1-minx)/3.0) ),2) ) )
+	elif btn_y_3.isChecked():
+		ynum1_2.setText( str( round(math.pow(10, math.log10((max_orbit)) * (minx+(1-minx)/3.0) ),2) ) )
 	## orbit P (year)
-	elif btn_x_4.isChecked():
+	elif btn_y_4.isChecked():
 		ynum1_2.setText( str( round(math.pow(10, max_year*8760.0 * (minx+(1-minx)/3.0) ),2) ) )
 	## dis to us
-	elif btn_x_5.isChecked():
+	elif btn_y_5.isChecked():
 		ynum1_2.setText( str( round(math.pow(10, max_dis* (minx+(1-minx)/3.0) ),2) ) )
 
-	ynum1_2.setCenter(Vector2( (0.1+0.8/3) * graph1.getWidth(), graph1.getHeight() + 25  ))
+	ynum1_2.setCenter(Vector2( -25,(0.9-0.8/3) * graph1.getHeight() ))
 	ynum1_2.setFont('fonts/helvetica.ttf 50')
+	ynum1_2.setAutosize(False)
 	ynum1_2.setColor(Color('white'))
+	ynum1_2.setRotation(-90)
 
 	### 0.9 - 0.8/3
 	ynum1_3 = Label.create(graph1)
 
 	## mass
-	if btn_x_1.isChecked():
-		ynum1_3.setText( str( round(math.pow(10, math.log10(KG_from_Me(max_mass))*(minx+2.0*(1-minx)/3.0) ),2) ) )
+	if btn_y_1.isChecked():
+		ynum1_3.setText( str( round(math.pow(10, math.log10((max_mass))*(minx+2.0*(1-minx)/3.0) ),2) ) )
 	## radius
-	elif btn_x_2.isChecked():
-		ynum1_3.setText( str( round(math.pow(10, math.log10(KM_from_Rj(max_size))*(minx+2.0*(1-minx)/3.0)),2) ) )
+	elif btn_y_2.isChecked():
+		ynum1_3.setText( str( round(math.pow(10, math.log10((max_size))*(minx+2.0*(1-minx)/3.0)),2) ) )
 	## orbit R (orbit)
-	elif btn_x_3.isChecked():
-		ynum1_3.setText( str( round(math.pow(10, math.log10(KM_from_AU(max_orbit))*(minx+2.0*(1-minx)/3.0)),2) ) )
+	elif btn_y_3.isChecked():
+		ynum1_3.setText( str( round(math.pow(10, math.log10((max_orbit))*(minx+2.0*(1-minx)/3.0)),2) ) )
 	## orbit P (year)
-	elif btn_x_4.isChecked():
+	elif btn_y_4.isChecked():
 		ynum1_3.setText( str( round(math.pow(10, max_year*8760.0*(minx+2.0*(1-minx)/3.0) ),2) ) )
 	## dis to us
-	elif btn_x_5.isChecked():
+	elif btn_y_5.isChecked():
 		ynum1_3.setText( str( round(math.pow(10, max_dis*(minx+2.0*(1-minx)/3.0) ),2) ) )
 
-	ynum1_3.setCenter(Vector2( (0.9-0.8/3) * graph1.getWidth(), graph1.getHeight() + 25  ))
+	ynum1_3.setCenter(Vector2( -25,(0.1+0.8/3) * graph1.getHeight() ))
 	ynum1_3.setFont('fonts/helvetica.ttf 50')
 	ynum1_3.setColor(Color('white'))
+	ynum1_3.setAutosize(False)
+	ynum1_3.setRotation(-90)
 
 	### 0.9 max
 	ynum1_4 = Label.create(graph1)
 
 	## mass
-	if btn_x_1.isChecked():
-		ynum1_4.setText( str( round(KG_from_Me(max_mass),2) ) )
+	if btn_y_1.isChecked():
+		ynum1_4.setText( str( round((max_mass),2) ) )
 	## radius
-	elif btn_x_2.isChecked():
-		ynum1_4.setText( str( round(KM_from_Rj(max_size),2) ) )
+	elif btn_y_2.isChecked():
+		ynum1_4.setText( str( round((max_size),2) ) )
 	## orbit R (orbit)
-	elif btn_x_3.isChecked():
-		ynum1_4.setText( str( round(KM_from_AU(max_orbit),2) ) )
+	elif btn_y_3.isChecked():
+		ynum1_4.setText( str( round((max_orbit),2) ) )
 	## orbit P (year)
-	elif btn_x_4.isChecked():
+	elif btn_y_4.isChecked():
 		ynum1_4.setText( str( round(max_year*8760,2) ) )
 	## dis to us
-	elif btn_x_5.isChecked():
+	elif btn_y_5.isChecked():
 		ynum1_4.setText( str( max_dis ) )
 
-	ynum1_4.setCenter(Vector2( 0.9 * graph1.getWidth(), graph1.getHeight() + 25  ))
+	ynum1_4.setCenter(Vector2( -25, 0.1 * graph1.getHeight()))
 	ynum1_4.setFont('fonts/helvetica.ttf 50')
 	ynum1_4.setColor(Color('white'))
+	ynum1_4.setAutosize(False)
+	ynum1_4.setRotation(-90)
 
 	print 'done'
 
@@ -3004,11 +3014,6 @@ def updateGraph2():
 	global xlabel2
 	global ylabel2
 	global plabel2
-
-	# global graph2
-	# global xlabel2
-	# global ylabel2
-	# global plabel2
 
 	print 'start updating Graph 2'
 
@@ -3062,35 +3067,35 @@ def updateGraph2():
 	# print 'min_mass:',min_mass
 
 	## mass
-	if btn_x_1.isChecked():
-		minx = math.log10( KG_from_Me(min_mass) )*1.0/math.log10( KG_from_Me(max_mass) )
+	if btn_x_12.isChecked():
+		minx = math.log10( (min_mass) )*1.0/math.log10( (max_mass) )
 	## radius
-	elif btn_x_2.isChecked():
-		minx = math.log10( KM_from_Rj(min_size) )*1.0/math.log10( KM_from_Rj(max_size) )
+	elif btn_x_22.isChecked():
+		minx = math.log10( (min_size) )*1.0/math.log10( (max_size) )
 	## orbit R (orbit)
-	elif btn_x_3.isChecked():
-		minx = math.log10( KM_from_AU(min_orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
+	elif btn_x_32.isChecked():
+		minx = math.log10( (min_orbit) )*1.0/math.log10( (max_orbit) )
 	## orbit P (year)
-	elif btn_x_4.isChecked():
+	elif btn_x_42.isChecked():
 		minx = math.log10( min_year*8760 )*1.0/math.log10( max_year*8760 )
 	## dis to us
-	elif btn_x_5.isChecked():
+	elif btn_x_52.isChecked():
 		minx = math.log10(min_dis)*1.0/math.log10(max_dis)
 
 	## mass
-	if btn_y_1.isChecked():
-		miny = math.log10( KG_from_Me(min_mass) )*1.0/math.log10( KG_from_Me(max_mass) )
+	if btn_y_12.isChecked():
+		miny = math.log10( (min_mass) )*1.0/math.log10( (max_mass) )
 	## radius
-	elif btn_y_2.isChecked():
-		miny = math.log10( KM_from_Rj(min_size) )*1.0/math.log10( KM_from_Rj(max_size) )
+	elif btn_y_22.isChecked():
+		miny = math.log10( (min_size) )*1.0/math.log10( (max_size) )
 	## orbit R (orbit)
-	elif btn_y_3.isChecked():
-		miny = math.log10( KM_from_AU(min_orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
+	elif btn_y_32.isChecked():
+		miny = math.log10( (min_orbit) )*1.0/math.log10( (max_orbit) )
 	## orbit P (year)
-	elif btn_y_4.isChecked():
+	elif btn_y_42.isChecked():
 		miny = math.log10( min_year*8760 )*1.0/math.log10( max_year*8760 )
 	## dis to us
-	elif btn_y_5.isChecked():
+	elif btn_y_52.isChecked():
 		miny = math.log10(min_dis)*1.0/math.log10(max_dis)
 
 	# print 'minx:',minx
@@ -3100,14 +3105,14 @@ def updateGraph2():
 		p = li_dotOnWall2[i].getPla()
 		star = li_dotOnWall2[i].getSys()._star
 
-		img = Image.create(graph1)
+		img = Image.create(graph2)
 
 		posx = 0
 		posy = 0
 
 		# BTN_P
 		## detection method
-		if btn_p_1.isChecked():
+		if btn_p_12.isChecked():
 			# print 'detection method'
 			plabel2.setText('detection method')
 			if cmp(p._detection,'unknown')==0:
@@ -3129,7 +3134,7 @@ def updateGraph2():
 			else:
 				img.setSize(Vector2(9,9))
 		## radius
-		elif btn_p_2.isChecked():
+		elif btn_p_22.isChecked():
 			# print 'radius'
 			plabel2.setText('radius')
 			if needHighlight(li_dotOnWall2[i].getSys(),star,p):
@@ -3147,7 +3152,7 @@ def updateGraph2():
 				img.setSize(Vector2(1,1))
 			print 'img size:',img.getSize()
 		## mass
-		elif btn_p_3.isChecked():
+		elif btn_p_32.isChecked():
 			# print 'mass'
 			plabel2.setText('mass')
 			if needHighlight(li_dotOnWall2[i].getSys(),star,p):
@@ -3156,10 +3161,10 @@ def updateGraph2():
 				img.setData(img_star)
 			if p._mass>0:
 				if CAVE():
-					# img.setSize(Vector2(math.log10( KG_from_Me(p._mass) )*100.0/math.log10( KG_from_Me(max_mass) ),math.log10( KG_from_Me(p._mass) )*100.0/math.log10( KG_from_Me(max_mass) ) ))
+					# img.setSize(Vector2(math.log10( (p._mass) )*100.0/math.log10( (max_mass) ),math.log10( (p._mass) )*100.0/math.log10( (max_mass) ) ))
 					img.setSize(Vector2(p._mass*100.0/max_mass,p._mass*100.0/max_mass))
 				else:
-					# img.setSize(Vector2(math.log10( KG_from_Me(p._mass) )*20.0/math.log10( KG_from_Me(max_mass) ),math.log10( KG_from_Me(p._mass) )*20.0/math.log10( KG_from_Me(max_mass) ) ))
+					# img.setSize(Vector2(math.log10( (p._mass) )*20.0/math.log10( (max_mass) ),math.log10( (p._mass) )*20.0/math.log10( (max_mass) ) ))
 					img.setSize(Vector2(p._mass*20.0/max_mass,p._mass*20.0/max_mass))
 			else:
 				img.setSize(Vector2(1,1))
@@ -3180,21 +3185,21 @@ def updateGraph2():
 		if btn_x_12.isChecked():
 			xlabel2.setText('planet mass (kg)')
 			if p._mass>0:
-				posx = math.log10( KG_from_Me(p._mass) )*1.0/math.log10( KG_from_Me(max_mass) )
+				posx = math.log10( (p._mass) )*1.0/math.log10( (max_mass) )
 			else:
 				posx = 0
 		## radius
 		elif btn_x_22.isChecked():
 			xlabel2.setText('planet radius (km)')
 			if p._size>0:
-				posx = math.log10( KM_from_Rj(p._size) )*1.0/math.log10( KM_from_Rj(max_size) )
+				posx = math.log10( (p._size) )*1.0/math.log10( (max_size) )
 			else:
 				posx = 0
 		## orbit R (orbit)
 		elif btn_x_32.isChecked():
 			xlabel2.setText('orbital radius (km)')
 			if p._orbit>0:
-				posx = math.log10( KM_from_AU(p._orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
+				posx = math.log10( (p._orbit) )*1.0/math.log10( (max_orbit) )
 			else:
 				posx = 0
 		## orbit P (year)
@@ -3217,21 +3222,21 @@ def updateGraph2():
 		if btn_y_12.isChecked():
 			ylabel2.setText('planet mass (kg)')
 			if p._mass>0:
-				posy = math.log10( KG_from_Me(p._mass) )*1.0/math.log10( KG_from_Me(max_mass) )
+				posy = math.log10( (p._mass) )*1.0/math.log10( (max_mass) )
 			else:
 				posy = 0
 		## radius
 		elif btn_y_22.isChecked():
 			ylabel2.setText('planet radius (km)')
 			if p._size>0:
-				posy = math.log10( KM_from_Rj(p._size) )*1.0/math.log10( KM_from_Rj(max_size) )
+				posy = math.log10( (p._size) )*1.0/math.log10( (max_size) )
 			else:
 				posy = 0
 		## orbit R (orbit)
 		elif btn_y_32.isChecked():
 			ylabel2.setText('orbital radius (km)')
 			if p._orbit>0:
-				posy = math.log10( KM_from_AU(p._orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
+				posy = math.log10( (p._orbit) )*1.0/math.log10( (max_orbit) )
 			else:
 				posy = 0
 		## orbit P (year)
@@ -3268,35 +3273,37 @@ def updateGraph2():
 	
 	## mass
 	if btn_x_12.isChecked():
-		xnum2_1.setText( str( round(KG_from_Me(min_mass),2) ) )
+		xnum2_1.setText( str( round((min_mass),2) ) )
 	## radius
 	elif btn_x_22.isChecked():
-		xnum2_1.setText( str( round(KM_from_Rj(min_size),2) ) )
+		xnum2_1.setText( str( round((min_size),2) ) )
 	## orbit R (orbit)
 	elif btn_x_32.isChecked():
-		xnum2_1.setText( str( round(KM_from_AU(min_orbit),2) ) )
+		xnum2_1.setText( str( round((min_orbit),2) ) )
 	## orbit P (year)
 	elif btn_x_42.isChecked():
-		xnum2_1.setText( str( round(min_year*8760,2) ) )
+		xnum2_1.setText( str( min_year*8760 ) )
 	## dis to us
 	elif btn_x_52.isChecked():
 		xnum2_1.setText( str( min_dis ) )
 
-	xnum2_1.setCenter(Vector2( 0.1 * graph2.getWidth(), graph2.getWidth() + 30  ))
+	xnum2_1.setCenter(Vector2( 0.1 * graph2.getWidth(), graph2.getHeight() + 25  ))
+	xnum2_1.setAutosize(False)
 	xnum2_1.setFont('fonts/helvetica.ttf 50')
+	xnum2_1.setColor(Color('white'))
 
 	### 0.1 + 0.8/3
 	xnum2_2 = Label.create(graph2)
 
 	## mass
 	if btn_x_12.isChecked():
-		xnum2_2.setText( str( round(math.pow(10, math.log10(KG_from_Me(max_mass))*(minx+(1-minx)/3.0) ),2) ))
+		xnum2_2.setText( str( round(math.pow(10, math.log10((max_mass))*(minx+(1-minx)/3.0) ),2) ))
 	## radius
 	elif btn_x_22.isChecked():
-		xnum2_2.setText( str( round(math.pow(10, math.log10(KM_from_Rj(max_size))*(minx+(1-minx)/3.0) ),2) ))
+		xnum2_2.setText( str( round(math.pow(10, math.log10((max_size))*(minx+(1-minx)/3.0) ),2) ))
 	## orbit R (orbit)
 	elif btn_x_32.isChecked():
-		xnum2_2.setText( str( round(math.pow(10, math.log10(KM_from_AU(max_orbit))*(minx+(1-minx)/3.0) ),2) ))
+		xnum2_2.setText( str( round(math.pow(10, math.log10((max_orbit))*(minx+(1-minx)/3.0) ),2) ))
 	## orbit P (year)
 	elif btn_x_42.isChecked():
 		xnum2_2.setText( str( round(math.pow(10, max_year*8760.0*(minx+(1-minx)/3.0 ) ),2) ))
@@ -3304,21 +3311,23 @@ def updateGraph2():
 	elif btn_x_52.isChecked():
 		xnum2_2.setText( str( round(math.pow(10, max_dis*(minx+(1-minx)/3.0 ) ),2)))
 
-	xnum2_2.setCenter(Vector2( (0.1+0.8/3) * graph2.getWidth(), graph2.getWidth() + 30  ))
+	xnum2_2.setCenter(Vector2( (0.1+0.8/3) * graph2.getWidth(), graph2.getHeight() + 25  ))
 	xnum2_2.setFont('fonts/helvetica.ttf 50')
+	xnum2_2.setAutosize(False)
+	xnum2_2.setColor(Color('white'))
 
 	### 0.9 - 0.8/3
 	xnum2_3 = Label.create(graph2)
 
 	## mass
 	if btn_x_12.isChecked():
-		xnum2_3.setText( str( round(math.pow(10, math.log10(KG_from_Me(max_mass))*(minx+2*(1-minx)/3.0) ),2) ))
+		xnum2_3.setText( str( round(math.pow(10, math.log10((max_mass))*(minx+2*(1-minx)/3.0) ),2) ))
 	## radius
 	elif btn_x_22.isChecked():
-		xnum2_3.setText( str( round(math.pow(10, math.log10(KM_from_Rj(max_size))*(minx+2*(1-minx)/3.0) ),2) ))
+		xnum2_3.setText( str( round(math.pow(10, math.log10((max_size))*(minx+2*(1-minx)/3.0) ),2) ))
 	## orbit R (orbit)
 	elif btn_x_32.isChecked():
-		xnum2_3.setText( str( round(math.pow(10, math.log10(KM_from_AU(max_orbit))*(minx+2*(1-minx)/3.0) ),2) ))
+		xnum2_3.setText( str( round(math.pow(10, math.log10((max_orbit))*(minx+2*(1-minx)/3.0) ),2) ))
 	## orbit P (year)
 	elif btn_x_42.isChecked():
 		xnum2_3.setText( str( round(math.pow(10, max_year*8760.0*(minx+2*(1-minx)/3.0 ) ),2) ))
@@ -3326,21 +3335,23 @@ def updateGraph2():
 	elif btn_x_52.isChecked():
 		xnum2_3.setText( str( round(math.pow(10, max_dis*(minx+2*(1-minx)/3.0 ) ),2) ))
 
-	xnum2_3.setCenter(Vector2( (0.9-0.8/3) * graph2.getWidth(), graph2.getWidth() + 30  ))
+	xnum2_3.setCenter(Vector2( (0.9-0.8/3) * graph2.getWidth(), graph2.getHeight() + 25  ))
 	xnum2_3.setFont('fonts/helvetica.ttf 50')
+	xnum2_3.setAutosize(False)
+	xnum2_3.setColor(Color('white'))
 
 	### 0.9 max
 	xnum2_4 = Label.create(graph2)
 
 	## mass
 	if btn_x_12.isChecked():
-		xnum2_4.setText( str( round(KG_from_Me(max_mass),2) ) )
+		xnum2_4.setText( str( round((max_mass),2) ) )
 	## radius
 	elif btn_x_22.isChecked():
-		xnum2_4.setText( str( round(KM_from_Rj(max_size),2) ) )
+		xnum2_4.setText( str( round((max_size),2) ) )
 	## orbit R (orbit)
 	elif btn_x_32.isChecked():
-		xnum2_4.setText( str( round(KM_from_AU(max_orbit),2) ) )
+		xnum2_4.setText( str( round((max_orbit),2) ) )
 	## orbit P (year)
 	elif btn_x_42.isChecked():
 		xnum2_4.setText( str( round(max_year*8760,2) ) )
@@ -3348,8 +3359,110 @@ def updateGraph2():
 	elif btn_x_52.isChecked():
 		xnum2_4.setText( str( max_dis ) )
 
-	xnum2_4.setCenter(Vector2( 0.9 * graph2.getWidth(), graph2.getWidth() + 30  ))
+	xnum2_4.setCenter(Vector2( 0.9 * graph2.getWidth(), graph2.getHeight() + 25  ))
 	xnum2_4.setFont('fonts/helvetica.ttf 50')
+	xnum2_4.setAutosize(False)
+	xnum2_4.setColor(Color('white'))
+
+	## draw numbers on y axis
+	### 0.1 min
+	ynum2_1 = Label.create(graph2)
+	## mass
+	if btn_y_12.isChecked():
+		ynum2_1.setText( str( round((min_mass),2) ) )
+	## radius
+	elif btn_y_22.isChecked():
+		ynum2_1.setText( str( round((min_size),2) ) )
+	## orbit R (orbit)
+	elif btn_y_32.isChecked():
+		ynum2_1.setText( str( round((min_orbit),2) ) )
+	## orbit P (year)
+	elif btn_y_42.isChecked():
+		ynum2_1.setText( str( round(min_year*8760,2) ) )
+	## dis to us
+	elif btn_y_52.isChecked():
+		ynum2_1.setText( str( min_dis ) )
+
+	ynum2_1.setCenter(Vector2(-25,0.9 * graph2.getHeight()))
+	ynum2_1.setFont('fonts/helvetica.ttf 50')
+	ynum2_1.setColor(Color('white'))
+	ynum2_1.setAutosize(False)
+	ynum2_1.setRotation(-90)
+
+	### 0.1 + 0.8/3
+	ynum2_2 = Label.create(graph2)
+
+	## mass
+	if btn_y_12.isChecked():
+		ynum2_2.setText( str( round(math.pow(10, math.log10((max_mass)) * (minx+(1-minx)/3.0) ),2) ) )
+	## radius
+	elif btn_y_22.isChecked():
+		ynum2_2.setText( str( round(math.pow(10, math.log10((max_size)) * (minx+(1-minx)/3.0) ),2) ) )
+	## orbit R (orbit)
+	elif btn_y_32.isChecked():
+		ynum2_2.setText( str( round(math.pow(10, math.log10((max_orbit)) * (minx+(1-minx)/3.0) ),2) ) )
+	## orbit P (year)
+	elif btn_y_42.isChecked():
+		ynum2_2.setText( str( round(math.pow(10, max_year*8760.0 * (minx+(1-minx)/3.0) ),2) ) )
+	## dis to us
+	elif btn_y_52.isChecked():
+		ynum2_2.setText( str( round(math.pow(10, max_dis* (minx+(1-minx)/3.0) ),2) ) )
+
+	ynum2_2.setCenter(Vector2( -25,(0.9-0.8/3) * graph2.getHeight() ))
+	ynum2_2.setFont('fonts/helvetica.ttf 50')
+	ynum2_2.setAutosize(False)
+	ynum2_2.setColor(Color('white'))
+	ynum2_2.setRotation(-90)
+
+	### 0.9 - 0.8/3
+	ynum2_3 = Label.create(graph2)
+
+	## mass
+	if btn_y_12.isChecked():
+		ynum2_3.setText( str( round(math.pow(10, math.log10((max_mass))*(minx+2.0*(1-minx)/3.0) ),2) ) )
+	## radius
+	elif btn_y_22.isChecked():
+		ynum2_3.setText( str( round(math.pow(10, math.log10((max_size))*(minx+2.0*(1-minx)/3.0)),2) ) )
+	## orbit R (orbit)
+	elif btn_y_32.isChecked():
+		ynum2_3.setText( str( round(math.pow(10, math.log10((max_orbit))*(minx+2.0*(1-minx)/3.0)),2) ) )
+	## orbit P (year)
+	elif btn_y_42.isChecked():
+		ynum2_3.setText( str( round(math.pow(10, max_year*8760.0*(minx+2.0*(1-minx)/3.0) ),2) ) )
+	## dis to us
+	elif btn_y_52.isChecked():
+		ynum2_3.setText( str( round(math.pow(10, max_dis*(minx+2.0*(1-minx)/3.0) ),2) ) )
+
+	ynum2_3.setCenter(Vector2( -25,(0.1+0.8/3) * graph2.getHeight() ))
+	ynum2_3.setFont('fonts/helvetica.ttf 50')
+	ynum2_3.setColor(Color('white'))
+	ynum2_3.setAutosize(False)
+	ynum2_3.setRotation(-90)
+
+	### 0.9 max
+	ynum2_4 = Label.create(graph1)
+
+	## mass
+	if btn_y_12.isChecked():
+		ynum2_4.setText( str( round((max_mass),2) ) )
+	## radius
+	elif btn_y_22.isChecked():
+		ynum2_4.setText( str( round((max_size),2) ) )
+	## orbit R (orbit)
+	elif btn_y_32.isChecked():
+		ynum2_4.setText( str( round((max_orbit),2) ) )
+	## orbit P (year)
+	elif btn_y_42.isChecked():
+		ynum2_4.setText( str( round(max_year*8760,2) ) )
+	## dis to us
+	elif btn_y_52.isChecked():
+		ynum2_4.setText( str( max_dis ) )
+
+	ynum2_4.setCenter(Vector2( -25, 0.1 * graph2.getHeight()))
+	ynum2_4.setFont('fonts/helvetica.ttf 50')
+	ynum2_4.setColor(Color('white'))
+	ynum2_4.setAutosize(False)
+	ynum2_4.setRotation(-90)
 
 	print 'done'
 
