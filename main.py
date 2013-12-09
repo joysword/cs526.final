@@ -46,6 +46,7 @@ dic_countToSys = {} # dictionary of systems
 li_boxOnWall = [] # scenenodes (outlineBox)
 
 li_dotOnWall = []
+li_dotOnWall2 = []
 
 li_textUniv = []
 
@@ -470,7 +471,7 @@ btn_y_5.setRadio(True)
 # btn_y_8.setRadio(True)
 # btn_y_9.setRadio(True)
 
-btn_y_1.setChecked(True)
+btn_y_2.setChecked(True)
 
 
 container_p = menu_p.getContainer()
@@ -502,7 +503,7 @@ menu_graph2 = mm.getMainMenu().addSubMenu('change graph 2')
 menu_x2 = menu_graph2.addSubMenu('x axis')
 menu_y2 = menu_graph2.addSubMenu('y axis')
 menu_p2 = menu_graph2.addSubMenu('points')
-btn_change_graph = menu_graph2.addButton('update','updateGraph()')
+btn_change_graph2 = menu_graph2.addButton('update','updateGraph2()')
 
 container_x2 = menu_x2.getContainer()
 btn_x_12 = Button.create(container_x2)
@@ -529,7 +530,7 @@ btn_x_32.setRadio(True)
 btn_x_42.setRadio(True)
 btn_x_52.setRadio(True)
 
-btn_x_12.setChecked(True)
+btn_x_22.setChecked(True)
 
 container_y2 = menu_y2.getContainer()
 btn_y_12 = Button.create(container_y2)
@@ -1010,11 +1011,14 @@ def initSmallMulti(preset):
 
 	global li_dotOnWall
 
+	global li_dotOnWall2
+
 	li_boxOnWall = []
 	dic_boxToSys = {}
 	dic_countToSys = {}
 
 	li_dotOnWall = [] # for graph
+	li_dotOnWall2 = [] # for graph 2
 
 	print 'start initializing small multiples'
 	playSound(sd_loading, cam.getPosition(), 0.5)
@@ -1112,6 +1116,11 @@ def initSmallMulti(preset):
 					dot.setSys(curSys)
 					dot.setPla(p)
 					li_dotOnWall.append(dot)
+
+					dot2 = Dot()
+					dot2.setSys(curSys)
+					dot2.setPla(p)
+					li_dotOnWall2.append(dot2)
 
 					model = StaticObject.create('defaultSphere')
 					model.setScale(Vector3(p._size * c_scaleWall_size * g_scale_size, p._size * c_scaleWall_size * g_scale_size, p._size * c_scaleWall_size * g_scale_size))
@@ -2390,21 +2399,85 @@ yaxis.setStyleValue('border', '4 #ffffffff')
 yaxis.setAutosize(False)
 yaxis.setPosition(Vector2(graph1.getPosition().x,graph1.getPosition().y))
 
+
+## create graph 2 container
+container_g2 = Container.create(ContainerLayout.LayoutFree, ui.getUi())
+container_g2.setStyleValue('fill', '#32ed8b55')
+container_g2.setStyleValue('border', '4 #2acee9ff')
+if CAVE():
+	container_g2.setSize(Vector2(2732-4, 1536-4))
+	container_g2.setPadding(0)
+	container_g2.setPosition(Vector2(21856+2,0+2+1536))
+else:
+	container_g2.setSize(Vector2(2728*0.2, 1532*0.2))
+	container_g2.setPadding(2)
+	container_g2.setPosition(Vector2(20, 20+400))
+container_g2.setBlendMode(WidgetBlendMode.BlendNormal)
+container_g2.setAlpha(1.0)
+container_g2.setAutosize(False)
+
 ## create graph 2
-# graph2 = Container.create(ContainerLayout.LayoutFree, ui.getUi())
-# graph2.setStyleValue('fill', '#11296b80')
-# graph2.setStyleValue('border', '4 #14b822ff')
-# graph2.setAutosize(False)
-# if CAVE():
-# 	graph2.setSize(Vector2(2732-4, 1536-4))
-# 	graph2.setPadding(10)
-# 	graph2.setPosition(Vector2(21856+2,768*2+2))
-# else:
-# 	graph2.setSize(Vector2(2728*0.2, 1532*0.2))
-# 	graph2.setPadding(2)
-# 	graph2.setPosition(Vector2(20, 20))
-# graph2.setBlendMode(WidgetBlendMode.BlendNormal)
-# graph2.setAlpha(1.0)
+graph2 = Container.create(ContainerLayout.LayoutFree, container_g2)
+graph2.setPosition(Vector2(200,50))
+if CAVE():
+	graph2.setSize(Vector2(2478, 1332))
+else:
+	graph2.setSize(Vector2((2732-4-104)*0.2, (1536-4-104)*0.2))
+# graph2.setClippingEnabled(True)
+graph2.setAutosize(False)
+
+## create x label
+xlabel2 = Label.create(container_g2)
+xlabel2.setAutosize(False)
+xlabel2.setSize(Vector2(container_g2.getWidth(), 50 ))
+xlabel2.setText('')
+xlabel2.setColor(Color('white'))
+xlabel2.setStyleValue('align', 'middle-center')
+if CAVE():
+	xlabel2.setFont('fonts/arial.ttf 76')
+else:
+	xlabel2.setFont('fonts/arial.ttf 14')
+xlabel2.setCenter(Vector2(container_g2.getSize().x*0.5,container_g2.getSize().y-50))
+xlabel2.setAutosize(False)
+
+## create y label
+ylabel2 = Label.create(container_g2)
+ylabel2.setText('')
+ylabel2.setColor(Color('white'))
+#ylabel2.setSize(Vector2(container_g2.getWidth(), 50 ))
+ylabel2.setSize(Vector2(50, container_g2.getWidth()))
+ylabel2.setAutosize(False)
+if CAVE():
+	ylabel2.setFont('fonts/arial.ttf 76')
+else:
+	ylabel2.setFont('fonts/arial.ttf 14')
+ylabel2.setPosition(Vector2(0,container_g2.getSize().y*0.5))
+#ylabel2.setStyleValue('align', 'middle-center')
+ylabel2.setRotation(-90)
+
+## create p label
+plabel2 = Label.create(container_g2)
+plabel2.setText('')
+plabel2.setColor(Color('white'))
+if CAVE():
+	plabel2.setFont('fonts/arial.ttf 76')
+else:
+	plabel2.setFont('fonts/arial.ttf 14')
+plabel2.setCenter(Vector2(container_g2.getSize().x*0.5,50))
+
+## create x axis
+xaxis2 = Container.create(ContainerLayout.LayoutFree, container_g2)
+xaxis2.setSize(Vector2(graph2.getWidth(), 2))
+xaxis2.setStyleValue('border', '4 #ffffffff')
+xaxis2.setAutosize(False)
+xaxis2.setPosition(Vector2(graph2.getPosition().x,graph2.getPosition().y+graph2.getHeight()))
+
+## create y axis
+yaxis2 = Container.create(ContainerLayout.LayoutFree, container_g2)
+yaxis2.setSize(Vector2(2, graph2.getHeight()))
+yaxis2.setStyleValue('border', '4 #ffffffff')
+yaxis2.setAutosize(False)
+yaxis2.setPosition(Vector2(graph2.getPosition().x,graph2.getPosition().y))
 
 ## highlight a box
 def highlight_box(box, highlight):
@@ -2462,7 +2535,6 @@ img_highlight = loadImage('textures/dot/red.png')
 '''textures/dot/dot.png'''
 
 def updateGraph():
-	# TO DO graph2
 
 	global li_dotOnWall
 	global graph1
@@ -2818,9 +2890,364 @@ def updateGraph():
 
 	print 'done'
 
+def updateGraph2():
 
+	global li_dotOnWall2
+	global graph2
+	global xlabel2
+	global ylabel2
+	global plabel2
+
+	# global graph2
+	# global xlabel2
+	# global ylabel2
+	# global plabel2
+
+	print 'start updating Graph 2'
+
+	if graph2.getNumChildren()>0:
+		for i in xrange(graph2.getNumChildren()):
+			graph2.removeChild(graph2.getChildByIndex(0))
+
+	max_mass = 0
+	max_size = 0
+	max_orbit = 0
+	max_year = 0
+	max_dis = 0
+
+	for i in xrange(len(li_dotOnWall2)):
+		p = li_dotOnWall2[i].getPla()
+		star = li_dotOnWall2[i].getSys()._star
+		if p._mass>max_mass:
+			max_mass = p._mass
+		if p._size>max_size:
+			max_size = p._size
+		if p._orbit>max_orbit:
+			max_orbit = p._orbit
+		if p._year>max_year:
+			max_year = p._year
+		if star._dis>max_dis:
+			max_dis = star._dis
+
+	min_mass = max_mass
+	min_size = max_size
+	min_orbit = max_orbit
+	min_year = max_year
+	min_dis = max_dis
+
+	for i in xrange(len(li_dotOnWall2)):
+		p = li_dotOnWall2[i].getPla()
+		star = li_dotOnWall2[i].getSys()._star
+		if p._mass>0 and p._mass<min_mass:
+			min_mass = p._mass
+		if p._size>0 and p._size<min_size:
+			min_size = p._size
+		if p._orbit>0 and p._orbit<min_orbit:
+			min_orbit = p._orbit
+		if p._year>0 and p._year<min_year:
+			min_year = p._year
+		if star._dis>0 and star._dis<min_dis:
+			min_dis = star._dis
+
+	minx = 0
+	miny = 0
+
+	# print 'min_mass:',min_mass
+
+	## mass
+	if btn_x_1.isChecked():
+		minx = math.log10( KG_from_Me(min_mass) )*1.0/math.log10( KG_from_Me(max_mass) )
+	## radius
+	elif btn_x_2.isChecked():
+		minx = math.log10( KM_from_Rj(min_size) )*1.0/math.log10( KM_from_Rj(max_size) )
+	## orbit R (orbit)
+	elif btn_x_3.isChecked():
+		minx = math.log10( KM_from_AU(min_orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
+	## orbit P (year)
+	elif btn_x_4.isChecked():
+		minx = math.log10( min_year*8760 )*1.0/math.log10( max_year*8760 )
+	## dis to us
+	elif btn_x_5.isChecked():
+		minx = math.log10(min_dis)*1.0/math.log10(max_dis)
+
+	## mass
+	if btn_y_1.isChecked():
+		miny = math.log10( KG_from_Me(min_mass) )*1.0/math.log10( KG_from_Me(max_mass) )
+	## radius
+	elif btn_y_2.isChecked():
+		miny = math.log10( KM_from_Rj(min_size) )*1.0/math.log10( KM_from_Rj(max_size) )
+	## orbit R (orbit)
+	elif btn_y_3.isChecked():
+		miny = math.log10( KM_from_AU(min_orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
+	## orbit P (year)
+	elif btn_y_4.isChecked():
+		miny = math.log10( min_year*8760 )*1.0/math.log10( max_year*8760 )
+	## dis to us
+	elif btn_y_5.isChecked():
+		miny = math.log10(min_dis)*1.0/math.log10(max_dis)
+
+	# print 'minx:',minx
+	# print 'miny:',miny
+	
+	for i in xrange(len(li_dotOnWall2)):
+		p = li_dotOnWall2[i].getPla()
+		star = li_dotOnWall2[i].getSys()._star
+
+		img = Image.create(graph1)
+
+		posx = 0
+		posy = 0
+
+		# BTN_P
+		## detection method
+		if btn_p_1.isChecked():
+			# print 'detection method'
+			plabel2.setText('detection method')
+			if cmp(p._detection,'unknown')==0:
+				img.setData(img_unknown)
+			elif cmp(p._detection,'Radial Velocity')==0:
+				img.setData(img_radial)
+			elif cmp(p._detection,'Transit')==0:
+				img.setData(img_transit)
+			elif cmp(p._detection,'Imaging')==0:
+				img.setData(img_imaging)
+			elif cmp(p._detection,'Pulsar Timing')==0:
+				img.setData(img_other)
+			elif cmp(p._detection,'Eclipse Timing Variations')==0:
+				img.setData(img_other)
+			elif cmp(p._detection,'Microlensing')==0:	
+				img.setData(img_other)
+			if CAVE():
+				img.setSize(Vector2(45,45))
+			else:
+				img.setSize(Vector2(9,9))
+		## radius
+		elif btn_p_2.isChecked():
+			# print 'radius'
+			plabel2.setText('radius')
+			if needHighlight(li_dotOnWall2[i].getSys(),star,p):
+				img.setData(img_highlight)
+			else:
+				img.setData(img_star)
+			if p._size>0:
+				if CAVE():
+					img.setSize(Vector2(math.log10( KM_from_Rj(p._size) )*100.0/math.log10( KM_from_Rj(max_size) ),math.log10( KM_from_Rj(p._size) )*100.0/math.log10( KM_from_Rj(max_size) )))
+					# img.setSize(Vector2(p._size*100.0/max_size,p._size*100.0/max_size))
+				else:
+					img.setSize(Vector2(math.log10(KM_from_Rj(p._size) )*20.0/math.log10( KM_from_Rj(max_size) ),math.log10( KM_from_Rj(p._size) )*20.0/math.log10( KM_from_Rj( max_size ) )))
+					# img.setSize(Vector2(p._size*20.0/max_size,p._size*20.0/max_size))
+			else:
+				img.setSize(Vector2(1,1))
+			print 'img size:',img.getSize()
+		## mass
+		elif btn_p_3.isChecked():
+			# print 'mass'
+			plabel2.setText('mass')
+			if needHighlight(li_dotOnWall2[i].getSys(),star,p):
+				img.setData(img_highlight)
+			else:
+				img.setData(img_star)
+			if p._mass>0:
+				if CAVE():
+					# img.setSize(Vector2(math.log10( KG_from_Me(p._mass) )*100.0/math.log10( KG_from_Me(max_mass) ),math.log10( KG_from_Me(p._mass) )*100.0/math.log10( KG_from_Me(max_mass) ) ))
+					img.setSize(Vector2(p._mass*100.0/max_mass,p._mass*100.0/max_mass))
+				else:
+					# img.setSize(Vector2(math.log10( KG_from_Me(p._mass) )*20.0/math.log10( KG_from_Me(max_mass) ),math.log10( KG_from_Me(p._mass) )*20.0/math.log10( KG_from_Me(max_mass) ) ))
+					img.setSize(Vector2(p._mass*20.0/max_mass,p._mass*20.0/max_mass))
+			else:
+				img.setSize(Vector2(1,1))
+			print 'img size:',img.getSize()
+		else:
+			plabel2.setText('')
+			if needHighlight(li_dotOnWall2[i].getSys(),star,p):
+				img.setData(img_highlight)
+			else:
+				img.setData(img_star)
+			if CAVE():
+				img.setSize(Vector2(45,45))
+			else:
+				img.setSize(Vector2(9,9))
+
+		# BTN_X
+		## mass
+		if btn_x_1.isChecked():
+			xlabel2.setText('planet mass (kg)')
+			if p._mass>0:
+				posx = math.log10( KG_from_Me(p._mass) )*1.0/math.log10( KG_from_Me(max_mass) )
+			else:
+				posx = 0
+		## radius
+		elif btn_x_2.isChecked():
+			xlabel2.setText('planet radius (km)')
+			if p._size>0:
+				posx = math.log10( KM_from_Rj(p._size) )*1.0/math.log10( KM_from_Rj(max_size) )
+			else:
+				posx = 0
+		## orbit R (orbit)
+		elif btn_x_3.isChecked():
+			xlabel2.setText('orbital radius (km)')
+			if p._orbit>0:
+				posx = math.log10( KM_from_AU(p._orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
+			else:
+				posx = 0
+		## orbit P (year)
+		elif btn_x_4.isChecked():
+			xlabel2.setText('orbital period (hour)')
+			if p._year>0:
+				posx = math.log10( p._year*8760 )*1.0/math.log10( max_year*8760 )
+			else:
+				posx = 0
+		## dis to us
+		elif btn_x_5.isChecked():
+			xlabel2.setText('distance to the Sun (lightyear)')
+			if star._dis>0:
+				posx = math.log10(star._dis)*1.0/math.log10(max_dis)
+			else:
+				posx = 0
+
+		# BTN_Y
+		## mass
+		if btn_y_1.isChecked():
+			ylabel2.setText('planet mass (kg)')
+			if p._mass>0:
+				posy = math.log10( KG_from_Me(p._mass) )*1.0/math.log10( KG_from_Me(max_mass) )
+			else:
+				posy = 0
+		## radius
+		elif btn_y_2.isChecked():
+			ylabel2.setText('planet radius (km)')
+			if p._size>0:
+				posy = math.log10( KM_from_Rj(p._size) )*1.0/math.log10( KM_from_Rj(max_size) )
+			else:
+				posy = 0
+		## orbit R (orbit)
+		elif btn_y_3.isChecked():
+			ylabel2.setText('orbital radius (km)')
+			if p._orbit>0:
+				posy = math.log10( KM_from_AU(p._orbit) )*1.0/math.log10( KM_from_AU(max_orbit) )
+			else:
+				posy = 0
+		## orbit P (year)
+		elif btn_y_4.isChecked():
+			ylabel2.setText('orbital period (hour)')
+			if p._year>0:
+				posy = math.log10( p._year*8760 )*1.0/ math.log10( max_year*8760 )
+			else:
+				posy = 0	
+		## dis to us
+		elif btn_y_5.isChecked():
+			ylabel2.setText('distance to the Sun (lightyear)')
+			if star._dis>0:
+				posy = math.log10(star._dis)*1.0/math.log10(max_dis)
+			else:
+				posy = 0
+
+		xx = 0
+		yy = 0
+
+		if posx != 0:
+			# if posx<minx:
+			# 	print 'posx, minx:', minx, posx
+			xx = 0.8 * graph2.getWidth() * (posx-minx)/(1-minx) + 0.1 * graph2.getWidth()
+		if posy != 0:
+			yy = 0.8 * graph2.getHeight() * ( 1 - (posy-miny)/(1-miny) ) + 0.1 * graph2.getHeight()
+		img.setCenter( Vector2(xx,yy) )
+		# print 'x,y:',xx,yy
+		li_dotOnWall2[i].setImage(img)
+
+	## draw numbers on x axis
+	### 0.1 min
+	xnum2_1 = Label.create(container_g2)
+	
+	## mass
+	if btn_x_1.isChecked():
+		xnum2_1.setText( str( KG_from_Me(min_mass) ) )
+	## radius
+	elif btn_x_2.isChecked():
+		xnum2_1.setText( str( KM_from_Rj(min_size) ) )
+	## orbit R (orbit)
+	elif btn_x_3.isChecked():
+		xnum2_1.setText( str( KM_from_AU(min_orbit) ) )
+	## orbit P (year)
+	elif btn_x_4.isChecked():
+		xnum2_1.setText( str( min_year*8760 ) )
+	## dis to us
+	elif btn_x_5.isChecked():
+		xnum2_1.setText( str( min_dis ) )
+
+	xnum2_1.setCenter(Vector2( 0.1 * graph2.getWidth(), graph2.getWidth() + 30  ))
+	xnum2_1.setFont('fonts/helvetica.ttf 50')
+
+	### 0.1 + 0.8/3
+	xnum2_2 = Label.create(container_g2)
+
+	## mass
+	if btn_x_1.isChecked():
+		xnum2_2.setText( str( math.pow(10, math.log10(KG_from_Me(max_mass))/3) ) )
+	## radius
+	elif btn_x_2.isChecked():
+		xnum2_2.setText( str( math.pow(10, math.log10(KM_from_Rj(max_size))/3) ) )
+	## orbit R (orbit)
+	elif btn_x_3.isChecked():
+		xnum2_2.setText( str( math.pow(10, math.log10(KM_from_AU(max_orbit))/3) ) )
+	## orbit P (year)
+	elif btn_x_4.isChecked():
+		xnum2_2.setText( str( math.pow(10, max_year*8760.0/3 ) ) )
+	## dis to us
+	elif btn_x_5.isChecked():
+		xnum2_2.setText( str( math.pow(10, max_dis/3.0 ) ) )
+
+	xnum2_2.setCenter(Vector2( (0.1+0.8/3) * graph2.getWidth(), graph2.getWidth() + 30  ))
+	xnum2_2.setFont('fonts/helvetica.ttf 50')
+
+	### 0.9 - 0.8/3
+	xnum2_3 = Label.create(container_g2)
+
+	## mass
+	if btn_x_1.isChecked():
+		xnum2_3.setText( str( math.pow(10, math.log10(KG_from_Me(max_mass))*2.0/3) ) )
+	## radius
+	elif btn_x_2.isChecked():
+		xnum2_3.setText( str( math.pow(10, math.log10(KM_from_Rj(max_size))*2.0/3) ) )
+	## orbit R (orbit)
+	elif btn_x_3.isChecked():
+		xnum2_3.setText( str( math.pow(10, math.log10(KM_from_AU(max_orbit))*2.0/3) ) )
+	## orbit P (year)
+	elif btn_x_4.isChecked():
+		xnum2_3.setText( str( math.pow(10, max_year*8760.0*2.0/3 ) ) )
+	## dis to us
+	elif btn_x_5.isChecked():
+		xnum2_3.setText( str( math.pow(10, max_dis*2.0/3.0 ) ) )
+
+	xnum2_3.setCenter(Vector2( (0.9-0.8/3) * graph2.getWidth(), graph2.getWidth() + 30  ))
+	xnum2_3.setFont('fonts/helvetica.ttf 50')
+
+	### 0.9 max
+	xnum2_4 = Label.create(container_g2)
+
+	## mass
+	if btn_x_1.isChecked():
+		xnum2_4.setText( str( KG_from_Me(max_mass) ) )
+	## radius
+	elif btn_x_2.isChecked():
+		xnum2_4.setText( str( KM_from_Rj(max_size) ) )
+	## orbit R (orbit)
+	elif btn_x_3.isChecked():
+		xnum2_4.setText( str( KM_from_AU(max_orbit) ) )
+	## orbit P (year)
+	elif btn_x_4.isChecked():
+		xnum2_4.setText( str( max_year*8760 ) )
+	## dis to us
+	elif btn_x_5.isChecked():
+		xnum2_4.setText( str( max_dis ) )
+
+	xnum2_4.setCenter(Vector2( 0.9 * graph2.getWidth(), graph2.getWidth() + 30  ))
+	xnum2_4.setFont('fonts/helvetica.ttf 50')
+
+	print 'done'
 
 updateGraph()
+updateGraph2()
 
 def showInfoForDot(dot):
 	global g_showInfo
